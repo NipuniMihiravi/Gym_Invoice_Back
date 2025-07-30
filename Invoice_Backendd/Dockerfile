@@ -1,16 +1,21 @@
+# ------------ Stage 1: Build ------------
 FROM maven:3.9.6-eclipse-temurin-17-alpine AS builder
 
 WORKDIR /app
 
-# Copy only the inner Invoice_Backendd folder contents
-COPY Invoice_Backendd/ .
+# Copy everything in current folder (where Dockerfile and pom.xml are)
+COPY . .
 
+# Build JAR
 RUN mvn clean package -DskipTests
 
+# ------------ Stage 2: Run ------------
 FROM eclipse-temurin:17
 
 WORKDIR /app
 
 COPY --from=builder /app/target/*.jar app.jar
+
+EXPOSE 8081
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
