@@ -3,6 +3,8 @@ package com.example.Invoice_Backendd.Model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.time.LocalDate;
+
 
 @Document(collection = "members")
 public class Member {
@@ -15,6 +17,8 @@ public class Member {
     private String password;
     private String phone;
     private String address;
+    private LocalDate joinedDate;
+    private String fees;
     private String occupation;
     private String specialDescription;
     private String membershipType;
@@ -23,7 +27,7 @@ public class Member {
     private String regStatus;
     private String membershipStatus;
 
-    public Member(String id, String name,String gender, String username, String password, String phone, String address, String occupation, String specialDescription, String membershipType, String memberId, Double regFee, String regStatus, String membershipStatus) {
+    public Member(String id, String name,String gender, String username, String password, String phone, String address,LocalDate joinedDate,String fees, String occupation, String specialDescription, String membershipType, String memberId, Double regFee, String regStatus, String membershipStatus) {
         this.id = id;
         this.gender = gender;
         this.name = name;
@@ -31,6 +35,8 @@ public class Member {
         this.password = password;
         this.phone = phone;
         this.address = address;
+        this.joinedDate = joinedDate;
+        this.fees = fees;
         this.occupation = occupation;
         this.specialDescription = specialDescription;
         this.membershipType = membershipType;
@@ -96,6 +102,22 @@ public class Member {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public LocalDate getJoinedDate() {
+        return joinedDate;
+    }
+
+    public void setJoinedDate(LocalDate joinedDate) {
+        this.joinedDate = joinedDate;
+    }
+
+    public String getFees() {
+        return fees;
+    }
+
+    public void setFees(String fees) {
+        this.fees = fees;
     }
 
     public String getOccupation() {
