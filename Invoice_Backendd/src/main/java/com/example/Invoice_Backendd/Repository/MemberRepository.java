@@ -6,4 +6,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface MemberRepository extends MongoRepository<Member, String> {
     Member findByMemberId(String memberId);
+    long countByMembershipStatus(String membershipStatus);
 }

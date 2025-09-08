@@ -1,6 +1,8 @@
 package com.example.Invoice_Backendd.Controller;
 
 import com.example.Invoice_Backendd.Model.Membership;
+import com.example.Invoice_Backendd.Repository.MemberRepository;
+import com.example.Invoice_Backendd.Repository.MembershipRepository;
 import com.example.Invoice_Backendd.Service.MembershipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,8 @@ public class MembershipController {
     @Autowired
     private MembershipService service;
 
+
+
     @GetMapping
     public List<Membership> getAll() {
         return service.getAllMemberships();
@@ -24,6 +28,7 @@ public class MembershipController {
     public Membership getById(@PathVariable String id) {
         return service.getMembershipById(id);
     }
+
 
     @PostMapping
     public Membership create(@RequestBody Membership membership) {

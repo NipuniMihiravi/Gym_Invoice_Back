@@ -2,6 +2,8 @@ package com.example.Invoice_Backendd.Controller;
 
 
 import com.example.Invoice_Backendd.Model.Member;
+import com.example.Invoice_Backendd.Repository.MemberRepository;
+import com.example.Invoice_Backendd.Repository.MembershipRepository;
 import com.example.Invoice_Backendd.Service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,9 @@ public class MemberController {
     @Autowired
     private MemberService memberService;
 
+    @Autowired
+    private MemberRepository memberRepository;  // ✅ Injected
+
     @PostMapping("/register")
     public Member registerMember(@RequestBody Member member) {
         return memberService.addMember(member);
@@ -26,6 +31,10 @@ public class MemberController {
         return memberService.getAllMembers();
     }
 
+    @GetMapping("/active/count")
+    public long getActiveMembersCount() {
+        return memberRepository.countByMembershipStatus("ACTIVE"); // Assuming status column
+    }
     @GetMapping("/{id}")
     public Member getMember(@PathVariable String id) {
         return memberService.getMemberById(id);
