@@ -1,6 +1,7 @@
 package com.example.Invoice_Backendd.Service;
 
 import com.example.Invoice_Backendd.Model.Payment;
+import com.example.Invoice_Backendd.Repository.MemberRepository;
 import com.example.Invoice_Backendd.Repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,15 @@ public class PaymentService {
     @Autowired
     private PaymentRepository paymentRepository;
 
+    @Autowired
+    private MemberRepository memberRepository;
+
     public Payment addPayment(Payment payment) {
+        memberRepository.findByMemberId(payment.getMemberId()).ifPresent(member -> {
+            payment.setMemberName(member.getName());
+            payment.setMemberEmail(member.getUsername()); // username = email
+        });
+
         return paymentRepository.save(payment);
     }
 

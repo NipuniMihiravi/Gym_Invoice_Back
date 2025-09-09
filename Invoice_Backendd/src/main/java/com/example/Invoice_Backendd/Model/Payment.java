@@ -11,6 +11,8 @@ public class Payment {
     private String id;
 
     private String memberId;
+    private String memberName;
+    private String memberEmail;
     private int year;
     private String month;
     private double amount;
@@ -33,6 +35,23 @@ public class Payment {
     public void setMemberId(String memberId) {
         this.memberId = memberId;
     }
+
+    public String getMemberName() {
+        return memberName;
+    }
+
+    public void setMemberName(String memberName) {
+        this.memberName = memberName;
+    }
+    public String getMemberEmail() {
+        return memberEmail;
+    }
+
+    public void setMemberEmail(String memberEmail) {
+        this.memberEmail = memberEmail;
+    }
+
+
 
     public int getYear() {
         return year;

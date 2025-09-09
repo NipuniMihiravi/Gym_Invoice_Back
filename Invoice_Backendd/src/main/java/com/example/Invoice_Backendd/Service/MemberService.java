@@ -31,19 +31,19 @@ public class MemberService {
     }
 
     public Member getMemberByMemberId(String memberId) {
-        return memberRepository.findByMemberId(memberId);
+        return memberRepository.findByMemberId(memberId).orElse(null);
     }
 
     public Member updateMember(String id, Member updatedMember) {
-        Member member = memberRepository.findById(id).orElse(null);
-        if (member != null) {
+        return memberRepository.findById(id).map(member -> {
             updatedMember.setId(id);
+
             if (updatedMember.getMemberId() == null || updatedMember.getMemberId().isEmpty()) {
                 updatedMember.setMemberId(member.getMemberId());
             }
+
             return memberRepository.save(updatedMember);
-        }
-        return null;
+        }).orElse(null);
     }
 
     public String deleteMember(String id) {
