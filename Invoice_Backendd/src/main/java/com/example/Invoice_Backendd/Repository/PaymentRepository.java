@@ -7,5 +7,7 @@ import java.util.List;
 
 public interface PaymentRepository extends MongoRepository<Payment, String> {
     List<Payment> findByMemberId(String memberId);
+    Payment findTopByMemberIdOrderByDateDesc(String memberId);
+
 
 }

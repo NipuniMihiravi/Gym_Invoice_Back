@@ -2,10 +2,14 @@ package com.example.Invoice_Backendd.Service;
 
 
 import com.example.Invoice_Backendd.Model.Member;
+import com.example.Invoice_Backendd.Model.Payment;
 import com.example.Invoice_Backendd.Repository.MemberRepository;
+import com.example.Invoice_Backendd.Repository.PaymentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.Random;
 
@@ -14,6 +18,33 @@ public class MemberService {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @Autowired
+    private PaymentRepository paymentRepository;
+
+    // Call this periodically or on member fetch
+    public void updateInactiveMembers() {
+        List<Member> allMembers = memberRepository.findAll();
+
+        for (Member member : allMembers) {
+            // Get latest payment
+            Payment lastPayment = paymentRepository.findTopByMemberIdOrderByDateDesc(member.getMemberId());
+            if (lastPayment != null) {
+                LocalDate lastPaymentDate = lastPayment.getDate();
+                long yearsDiff = ChronoUnit.YEARS.between(lastPaymentDate, LocalDate.now());
+                if (yearsDiff >= 1 && member.getMembershipStatus().equals("ACTIVE")) {
+                    member.setMembershipStatus("Inactive");
+                    memberRepository.save(member);
+                }
+            } else {
+                // No payment ever made → mark inactive
+                if (!member.getMembershipStatus().equals("Inactive")) {
+                    member.setMembershipStatus("Inactive");
+                    memberRepository.save(member);
+                }
+            }
+        }
+    }
 
     public Member addMember(Member member) {
         if (member.getMemberId() == null || member.getMemberId().isEmpty()) {

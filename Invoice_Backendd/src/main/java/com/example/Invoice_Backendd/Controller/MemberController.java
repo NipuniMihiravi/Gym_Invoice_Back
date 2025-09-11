@@ -51,7 +51,8 @@ public class MemberController {
     }
 
     @DeleteMapping("/{id}")
-    public String deleteMember(@PathVariable String memberId) {
-        return memberService.deleteMember(memberId);
+    public String deleteMember(@PathVariable String id) {
+        return memberService.deleteMember(id);
     }
+
 }

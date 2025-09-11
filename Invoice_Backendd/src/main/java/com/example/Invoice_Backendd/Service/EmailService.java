@@ -1,9 +1,17 @@
 package com.example.Invoice_Backendd.Service;
 
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
+
+import jakarta.mail.internet.MimeMessage;
+import java.io.ByteArrayOutputStream;
 
 @Service
 public class EmailService {
@@ -11,19 +19,47 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    public void sendPaymentEmail(String to, String name, String month, String status, double amount) {
-        String subject = "Payment Status - Pulse Fitness";
-        String body = String.format(
-                "Hello %s,\n\nYour payment status for %s is marked as: %s.\nAmount: Rs. %.2f\n\nThank you,\nPulse Fitness",
-                name, month, status, amount
+    public void sendPaymentEmail(String to, String memberName, String month, String status, double amount) throws Exception {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setTo(to);
+        helper.setSubject("Pulse Fitness - Payment Confirmation");
+        helper.setText(
+                "Hello " + memberName + ",\n\n" +
+                        "Your payment details:\n" +
+                        "Month: " + month + "\n" +
+                        "Amount: Rs. " + amount + "\n" +
+                        "Status: " + status + "\n\n" +
+                        "Thank you for staying fit with Pulse Fitness!"
         );
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("cocolocogarden123@gmail.com"); // Must match your Gmail
-        message.setTo(to);                                 // recipient email
-        message.setSubject(subject);
-        message.setText(body);
+        // ✅ Generate PDF bill
+        byte[] pdfBytes = generatePaymentPdf(memberName, month, status, amount);
 
+        // ✅ Attach PDF
+        helper.addAttachment("Payment_Invoice.pdf", new ByteArrayResource(pdfBytes));
+
+        // ✅ Send email
         mailSender.send(message);
+    }
+
+    private byte[] generatePaymentPdf(String memberName, String month, String status, double amount) throws Exception {
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        PdfWriter writer = new PdfWriter(out);
+        PdfDocument pdfDoc = new PdfDocument(writer);
+        Document document = new Document(pdfDoc);
+
+        document.add(new Paragraph("Pulse Fitness - Payment Invoice").setBold().setFontSize(18));
+        document.add(new Paragraph("Member Name: " + memberName));
+        document.add(new Paragraph("Month: " + month));
+        document.add(new Paragraph("Amount: Rs. " + amount));
+        document.add(new Paragraph("Status: " + status));
+        document.add(new Paragraph("\nThank you for your payment!"));
+
+        document.close();
+
+        return out.toByteArray();
     }
 }
