@@ -26,8 +26,9 @@ public class PaymentController {
         // Send Email Notification
         try {
             emailService.sendPaymentEmail(
-                    savedPayment.getMemberEmail(),   // ensure Payment model has memberEmail
-                    savedPayment.getMemberName(),    // ensure Payment model has memberName
+                    savedPayment.getMemberEmail(),   // email
+                    savedPayment.getMemberId(),      // memberId (make sure your Payment model has this)
+                    savedPayment.getMemberName(),    // memberName
                     savedPayment.getMonth(),
                     savedPayment.getStatus(),
                     savedPayment.getAmount()
