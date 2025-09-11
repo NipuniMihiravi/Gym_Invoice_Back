@@ -19,14 +19,14 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    public void sendPaymentEmail(String to, String memberName, String month, String status, double amount) throws Exception {
+    public void sendPaymentEmail(String to, String memberId, String memberName, String month, String status, double amount) throws Exception {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
         helper.setTo(to);
         helper.setSubject("Pulse Fitness - Payment Confirmation");
         helper.setText(
-                "Hello " + memberName + ",\n\n" +
+                "Hello " + memberName + " (Member ID: " + memberId + "),\n\n" +
                         "Your payment details:\n" +
                         "Month: " + month + "\n" +
                         "Amount: Rs. " + amount + "\n" +
@@ -34,8 +34,8 @@ public class EmailService {
                         "Thank you for staying fit with Pulse Fitness!"
         );
 
-        // ✅ Generate PDF bill
-        byte[] pdfBytes = generatePaymentPdf(memberName, month, status, amount);
+        // ✅ Generate PDF bill with Member ID
+        byte[] pdfBytes = generatePaymentPdf(memberId, memberName, month, status, amount);
 
         // ✅ Attach PDF
         helper.addAttachment("Payment_Invoice.pdf", new ByteArrayResource(pdfBytes));
@@ -44,7 +44,7 @@ public class EmailService {
         mailSender.send(message);
     }
 
-    private byte[] generatePaymentPdf(String memberName, String month, String status, double amount) throws Exception {
+    private byte[] generatePaymentPdf(String memberId, String memberName, String month, String status, double amount) throws Exception {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
 
         PdfWriter writer = new PdfWriter(out);
@@ -52,6 +52,7 @@ public class EmailService {
         Document document = new Document(pdfDoc);
 
         document.add(new Paragraph("Pulse Fitness - Payment Invoice").setBold().setFontSize(18));
+        document.add(new Paragraph("Member ID: " + memberId));
         document.add(new Paragraph("Member Name: " + memberName));
         document.add(new Paragraph("Month: " + month));
         document.add(new Paragraph("Amount: Rs. " + amount));
