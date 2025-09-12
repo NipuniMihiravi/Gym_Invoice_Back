@@ -13,6 +13,7 @@ import java.util.Base64;
 
 public class QRCodeGenerator {
 
+    // Existing method (Base64 for saving in DB)
     public static String generateQRCodeBase64(String text, int width, int height) throws WriterException, IOException {
         QRCodeWriter qrCodeWriter = new QRCodeWriter();
         BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
@@ -27,6 +28,24 @@ public class QRCodeGenerator {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         ImageIO.write(image, "png", baos);
 
-        return Base64.getEncoder().encodeToString(baos.toByteArray()); // Save as Base64 string
+        return Base64.getEncoder().encodeToString(baos.toByteArray());
+    }
+
+    // ✅ New method (byte[] for email attachment)
+    public static byte[] generateQRCodeImage(String text, int width, int height) throws WriterException, IOException {
+        QRCodeWriter qrCodeWriter = new QRCodeWriter();
+        BitMatrix bitMatrix = qrCodeWriter.encode(text, BarcodeFormat.QR_CODE, width, height);
+
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        for (int x = 0; x < width; x++) {
+            for (int y = 0; y < height; y++) {
+                image.setRGB(x, y, bitMatrix.get(x, y) ? 0xFF000000 : 0xFFFFFFFF);
+            }
+        }
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", baos);
+
+        return baos.toByteArray(); // Return as byte[] for email
     }
 }
