@@ -26,8 +26,9 @@ public class Member {
     private Double regFee;
     private String regStatus;
     private String membershipStatus;
+    private String qrCode;
 
-    public Member(String id, String name,String gender, String username, String password, String phone, String address,LocalDate joinedDate,String fees, String occupation, String specialDescription, String membershipType, String memberId, Double regFee, String regStatus, String membershipStatus) {
+    public Member(String id, String name,String gender, String username, String password, String phone, String address,LocalDate joinedDate,String fees, String occupation, String specialDescription, String membershipType, String memberId, Double regFee, String regStatus, String membershipStatus, String qrCode) {
         this.id = id;
         this.gender = gender;
         this.name = name;
@@ -44,6 +45,7 @@ public class Member {
         this.regFee = regFee;
         this.regStatus = regStatus;
         this.membershipStatus = membershipStatus;
+        this.qrCode = qrCode;
     }
 
     public String getId() {
@@ -174,6 +176,14 @@ public class Member {
 
     public void setMembershipStatus(String membershipStatus) {
         this.membershipStatus = membershipStatus;
+    }
+
+    public String getQrCode() {
+        return qrCode;
+    }
+
+    public void setQrCode(String qrCode) {
+        this.qrCode = qrCode;
     }
 }
 
