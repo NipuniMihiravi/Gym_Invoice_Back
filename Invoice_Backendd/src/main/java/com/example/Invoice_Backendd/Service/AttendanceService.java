@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class AttendanceService {
@@ -20,12 +20,12 @@ public class AttendanceService {
         LocalDate today = LocalDate.now();
 
         // Check if attendance is already marked for today
-        Optional<Attendance> existing = attendanceRepository.findByMemberIdAndDate(memberId, today);
-        if (existing.isPresent()) {
+        boolean alreadyMarked = attendanceRepository.existsByMemberIdAndDate(memberId, today);
+        if (alreadyMarked) {
             return "Attendance already marked for today!";
         }
 
-        Attendance attendance = new Attendance(memberId, today);
+        Attendance attendance = new Attendance(memberId, today, LocalTime.now());
         attendanceRepository.save(attendance);
 
         return "Attendance marked for Member: " + memberId;
