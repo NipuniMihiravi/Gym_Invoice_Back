@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -27,6 +28,9 @@ public class MemberService {
 
     @Autowired
     private EmailService emailService;  // ✅ inject EmailService
+
+    @Autowired
+    private SequenceGeneratorService sequenceGeneratorService;
 
     // Check inactive members based on payments
     public void updateInactiveMembers() {
@@ -119,8 +123,8 @@ public class MemberService {
         return "Deleted member with ID: " + id;
     }
 
-    private String generateMemberId() {
-        Random random = new Random();
-        return "M" + (10000000 + random.nextInt(90000000));
+    public String generateMemberId() {
+        long newId = sequenceGeneratorService.getNextSequence("memberId");
+        return String.format("M%05d", newId); // e.g., M00453
     }
 }

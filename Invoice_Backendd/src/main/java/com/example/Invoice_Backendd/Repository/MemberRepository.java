@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface MemberRepository extends MongoRepository<Member, String> {
     Optional<Member> findByMemberId(String memberId);
     long countByMembershipStatus(String membershipStatus);
+    // Get the last member based on memberId (sorted descending)
+    Optional<Member> findFirstByOrderByMemberIdDesc();
 }
