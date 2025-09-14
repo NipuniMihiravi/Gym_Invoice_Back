@@ -58,4 +58,13 @@ public class AttendanceController {
     public List<Attendance> getAttendanceByMember(@PathVariable String memberId) {
         return attendanceService.getAttendanceByMember(memberId);
     }
+
+    // GET: Get attendance by memberId and date range
+    @GetMapping("/member/{memberId}/range")
+    public List<Attendance> getAttendanceByMemberAndDateRange(
+            @PathVariable String memberId,
+            @RequestParam LocalDate startDate,
+            @RequestParam LocalDate endDate) {
+        return attendanceRepository.findByMemberIdAndDateBetween(memberId, startDate, endDate);
+    }
 }

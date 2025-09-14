@@ -20,5 +20,7 @@ public interface AttendanceRepository extends MongoRepository<Attendance, String
     // Optional: Find attendance records for a specific date (if needed)
     List<Attendance> findByDate(LocalDate date);
 
+    List<Attendance> findByMemberIdAndDateBetween(String memberId, LocalDate startDate, LocalDate endDate);
+
     boolean existsByMemberIdAndDate(String memberId, LocalDate date);
 }
