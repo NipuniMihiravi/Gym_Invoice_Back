@@ -1,6 +1,7 @@
 package com.example.Invoice_Backendd.Service;
 
 import com.example.Invoice_Backendd.DTO.PendingPaymentDTO;
+import com.example.Invoice_Backendd.Model.Member;
 import com.example.Invoice_Backendd.Model.Payment;
 import com.example.Invoice_Backendd.Repository.AttendanceRepository;
 import com.example.Invoice_Backendd.Repository.MemberRepository;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -74,29 +76,31 @@ public class PaymentService {
         return "Deleted payment with ID: " + id;
     }
 
-    public List<PendingPaymentDTO> getPendingPaymentMembers() {
-        LocalDate today = LocalDate.now();
+    public List<PendingPaymentDTO> getPendingPayments(LocalDate start, LocalDate end) {
 
-        return memberRepository.findAll().stream().map(member -> {
-                    LocalDate joined = member.getJoinedDate();
-                    LocalDate endDate = joined.plusDays(30);
+        List<Member> allMembers = memberRepository.findAll();
+        List<PendingPaymentDTO> result = new ArrayList<>();
 
-                    long attendanceCount = attendanceRepository
-                            .countByMemberIdAndDateBetween(member.getMemberId(), joined, endDate);
+        for (Member member : allMembers) {
 
-                    boolean paymentDone = paymentRepository
-                            .existsByMemberIdAndStatus(member.getMemberId(), "Done");
+            long attendanceCount = attendanceRepository.countByMemberIdAndDateBetween(
+                    member.getId(), start, end);
 
-                    return new PendingPaymentDTO(
-                            member.getMemberId(),
-                            member.getName(),
-                            member.getMembershipType(),
-                            joined.toString(),
-                            attendanceCount,
-                            paymentDone
-                    );
-                })
-                .filter(m -> m.getAttendanceCount() > 0 && !m.isPaymentDone())
-                .toList();
+            boolean hasPayment = paymentRepository.existsByMemberIdAndDateBetween(
+                    member.getId(), start, end);
+
+            if (!hasPayment) {
+                result.add(new PendingPaymentDTO(
+                        member.getId(),
+                        member.getName(),
+                        attendanceCount
+                ));
+            }
+        }
+
+        return result;
     }
+
+
+
 }

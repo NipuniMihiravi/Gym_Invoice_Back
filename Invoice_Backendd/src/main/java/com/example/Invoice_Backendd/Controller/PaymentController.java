@@ -7,6 +7,7 @@ import com.example.Invoice_Backendd.Service.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -65,8 +66,12 @@ public class PaymentController {
         return paymentService.deletePayment(id);
     }
 
-    @GetMapping("/pending-payments")
-    public List<PendingPaymentDTO> getPendingPaymentMembers() {
-        return paymentService.getPendingPaymentMembers();
+    @GetMapping("/pending")
+    public List<PendingPaymentDTO> getPendingPayments(
+            @RequestParam String startDate,
+            @RequestParam String endDate) {
+
+        return paymentService.getPendingPayments(LocalDate.parse(startDate), LocalDate.parse(endDate));
     }
+
 }
