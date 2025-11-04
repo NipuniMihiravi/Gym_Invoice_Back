@@ -6,16 +6,22 @@ import com.example.Invoice_Backendd.Repository.MemberRepository;
 import com.example.Invoice_Backendd.Repository.PaymentRepository;
 import com.example.Invoice_Backendd.Util.QRCodeGenerator;
 import com.google.zxing.WriterException;
+import com.mongodb.client.model.Aggregates;
+import com.mongodb.client.model.Field;
+import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Projections;
 import jakarta.mail.MessagingException;
+import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
+import org.bson.Document;
+
 
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class MemberService {
@@ -31,6 +37,9 @@ public class MemberService {
 
     @Autowired
     private SequenceGeneratorService sequenceGeneratorService;
+
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     // Check inactive members based on payments
     public void updateInactiveMembers() {
@@ -126,5 +135,35 @@ public class MemberService {
     public String generateMemberId() {
         long newId = sequenceGeneratorService.getNextSequence("memberId");
         return String.format("M%05d", newId); // e.g., M00453
+    }
+
+    public List<Document> getDueMembers() {
+
+        List<Bson> pipeline = Arrays.asList(
+                Aggregates.lookup("payments", "memberId", "memberId", "payments"),
+                Aggregates.addFields(new Field<>("lastPaymentDate",
+                        new Document("$ifNull", Arrays.asList(
+                                new Document("$max", "$payments.date"),
+                                "$joinedDate"
+                        ))
+                )),
+                Aggregates.addFields(new Field<>("nextDueDate",
+                        new Document("$dateAdd", new Document("startDate", "$lastPaymentDate")
+                                .append("unit", "month")
+                                .append("amount", 1)
+                        )
+                )),
+                Aggregates.match(Filters.and(
+                        Filters.lt("nextDueDate", new Date()),
+                        Filters.ne("membershipStatus", "Inactive")
+                )),
+                Aggregates.project(Projections.fields(
+                        Projections.include("memberId", "name", "phone", "joinedDate", "membershipType", "lastPaymentDate", "nextDueDate")
+                ))
+        );
+
+        return mongoTemplate.getCollection("members")
+                .aggregate(pipeline)
+                .into(new ArrayList<>());
     }
 }

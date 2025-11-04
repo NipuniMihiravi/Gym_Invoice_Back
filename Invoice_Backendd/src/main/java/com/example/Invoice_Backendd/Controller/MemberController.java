@@ -6,6 +6,7 @@ import com.example.Invoice_Backendd.Repository.MemberRepository;
 import com.example.Invoice_Backendd.Repository.MembershipRepository;
 import com.example.Invoice_Backendd.Service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -54,5 +55,11 @@ public class MemberController {
     public String deleteMember(@PathVariable String id) {
         return memberService.deleteMember(id);
     }
+
+    @GetMapping("/due-members")
+    public ResponseEntity<?> getDueMembers() {
+        return ResponseEntity.ok(memberService.getDueMembers());
+    }
+
 
 }
