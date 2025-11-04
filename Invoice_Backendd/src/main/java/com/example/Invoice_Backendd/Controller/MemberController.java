@@ -7,6 +7,7 @@ import com.example.Invoice_Backendd.Repository.MembershipRepository;
 import com.example.Invoice_Backendd.Service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.bson.Document;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -60,6 +61,12 @@ public class MemberController {
     public ResponseEntity<?> getDueMembers() {
         return ResponseEntity.ok(memberService.getDueMembers());
     }
+
+    @GetMapping("/due-attendance")
+    public List<Document> getDueAttendanceMembers() {
+        return memberService.getOverdueAttendanceMembers();
+    }
+
 
 
 }

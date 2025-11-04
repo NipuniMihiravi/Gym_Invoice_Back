@@ -166,4 +166,56 @@ public class MemberService {
                 .aggregate(pipeline)
                 .into(new ArrayList<>());
     }
+
+    public List<Document> getOverdueAttendanceMembers() {
+
+        List<Bson> pipeline = Arrays.asList(
+                Aggregates.lookup("payments", "memberId", "memberId", "payments"),
+
+                Aggregates.addFields(new Field<>("lastPaymentDate",
+                        new Document("$ifNull", Arrays.asList(
+                                new Document("$max", "$payments.date"),
+                                "$joinedDate"
+                        ))
+                )),
+
+                Aggregates.addFields(new Field<>("nextDueDate",
+                        new Document("$dateAdd", new Document("startDate", "$lastPaymentDate")
+                                .append("unit", "month")
+                                .append("amount", 1)
+                        )
+                )),
+
+                Aggregates.match(Filters.and(
+                        Filters.lt("nextDueDate", new Date()),
+                        Filters.ne("membershipStatus", "Inactive")
+                )),
+
+                // ✅ JOIN attendance table
+                Aggregates.lookup("attendance", "memberId", "memberId", "attendanceRecords"),
+
+                // ✅ Filter only attendance after due date
+                Aggregates.addFields(new Field<>("lateAttendance",
+                        new Document("$filter", new Document()
+                                .append("input", "$attendanceRecords")
+                                .append("as", "a")
+                                .append("cond", new Document("$gt", Arrays.asList("$$a.date", "$nextDueDate")))
+                        )
+                )),
+
+                // ✅ Count late attendance
+                Aggregates.addFields(new Field<>("lateDays", new Document("$size", "$lateAttendance"))),
+
+                // ✅ Final result fields
+                Aggregates.project(Projections.fields(
+                        Projections.include("memberId", "name", "phone", "joinedDate",
+                                "lastPaymentDate", "nextDueDate", "lateDays", "lateAttendance")
+                ))
+        );
+
+        return mongoTemplate.getCollection("members")
+                .aggregate(pipeline)
+                .into(new ArrayList<>());
+    }
+
 }
