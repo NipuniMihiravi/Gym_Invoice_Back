@@ -17,9 +17,10 @@ public class Payment {
     private String month;
     private double amount;
     private LocalDate date;
+    private LocalDate joinedDate;
+    private String membershipType;
     private String status; // e.g. "Pending", "Done"
 
-    // Getters and Setters
     public String getId() {
         return id;
     }
@@ -43,6 +44,7 @@ public class Payment {
     public void setMemberName(String memberName) {
         this.memberName = memberName;
     }
+
     public String getMemberEmail() {
         return memberEmail;
     }
@@ -50,8 +52,6 @@ public class Payment {
     public void setMemberEmail(String memberEmail) {
         this.memberEmail = memberEmail;
     }
-
-
 
     public int getYear() {
         return year;
@@ -85,11 +85,41 @@ public class Payment {
         this.date = date;
     }
 
+    public LocalDate getJoinedDate() {
+        return joinedDate;
+    }
+
+    public void setJoinedDate(LocalDate joinedDate) {
+        this.joinedDate = joinedDate;
+    }
+
+    public String getMembershipType() {
+        return membershipType;
+    }
+
+    public void setMembershipType(String membershipType) {
+        this.membershipType = membershipType;
+    }
+
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Payment(String id, String memberId, String memberName, String memberEmail, int year, String month, double amount, LocalDate date, LocalDate joinedDate, String membershipType, String status) {
+        this.id = id;
+        this.memberId = memberId;
+        this.memberName = memberName;
+        this.memberEmail = memberEmail;
+        this.year = year;
+        this.month = month;
+        this.amount = amount;
+        this.date = date;
+        this.joinedDate = joinedDate;
+        this.membershipType = membershipType;
         this.status = status;
     }
 }

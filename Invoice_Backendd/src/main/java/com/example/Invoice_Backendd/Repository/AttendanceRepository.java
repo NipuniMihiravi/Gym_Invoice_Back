@@ -23,4 +23,6 @@ public interface AttendanceRepository extends MongoRepository<Attendance, String
     List<Attendance> findByMemberIdAndDateBetween(String memberId, LocalDate startDate, LocalDate endDate);
 
     boolean existsByMemberIdAndDate(String memberId, LocalDate date);
+
+    long countByMemberIdAndDateBetween(String memberId, LocalDate start, LocalDate end);
 }

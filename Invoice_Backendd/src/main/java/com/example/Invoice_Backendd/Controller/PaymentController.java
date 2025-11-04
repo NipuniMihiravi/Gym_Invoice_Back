@@ -1,5 +1,6 @@
 package com.example.Invoice_Backendd.Controller;
 
+import com.example.Invoice_Backendd.DTO.PendingPaymentDTO;
 import com.example.Invoice_Backendd.Model.Payment;
 import com.example.Invoice_Backendd.Service.EmailService;
 import com.example.Invoice_Backendd.Service.PaymentService;
@@ -62,5 +63,10 @@ public class PaymentController {
     @DeleteMapping("/{id}")
     public String deletePayment(@PathVariable String id) {
         return paymentService.deletePayment(id);
+    }
+
+    @GetMapping("/pending-payments")
+    public List<PendingPaymentDTO> getPendingPaymentMembers() {
+        return paymentService.getPendingPaymentMembers();
     }
 }
