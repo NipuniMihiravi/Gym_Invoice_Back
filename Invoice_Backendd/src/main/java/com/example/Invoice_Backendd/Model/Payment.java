@@ -21,6 +21,10 @@ public class Payment {
     private String status;
     private String paymentMethod;
 
+    public Payment() {
+
+    }
+
     public String getId() {
         return id;
     }
