@@ -31,7 +31,7 @@ public class PaymentService {
         // ✅ Auto-fill member details from Member collection
         memberRepository.findByMemberId(payment.getMemberId()).ifPresent(member -> {
             payment.setMemberName(member.getName());
-            payment.setMemberEmail(member.getUsername());
+            payment.setMemberEmail(member.getEmail());
             payment.setJoinedDate(member.getJoinedDate());
             payment.setMembershipType(member.getMembershipType());
         });
