@@ -15,9 +15,6 @@ public class Member {
     // Existing fields (NOT removed)
     private String name;
     private String gender;
-    private String username;
-    private String password;
-    private String phone;
     private String address;
     private LocalDate joinedDate;
     private String fees;
@@ -79,16 +76,13 @@ public class Member {
     // ✅ Office use
     private String note;
     private String dateOffice;
-    private String signatureowner;
+    private String signatureOwner;
 
-    public Member(String id, String name, String gender, String username, String password, String address, String phone, LocalDate joinedDate, String fees, String specialDescription, String membershipType, String memberId, Double regFee, String regStatus, String membershipStatus, String qrCode, String residence, String city, String landPhone, String mobile, String dob, String civilStatus, String idType, String idNumber, String email, String officeAddress, String officeMobile, boolean reasonEndurance, boolean reasonFitness, boolean reasonWeightLoss, boolean reasonStrength, boolean reasonMuscle, boolean newspaper, boolean leaflet, boolean friend, boolean member, boolean facebook, String emergencyName, String emergencyRelationship, String emergencyMobile, String emergencyLand, List<String> parq, String weight, String height, String fat, Boolean termsAccepted, String liabilityDate, String memberSignature, String note, String dateOffice, String signatureowner) {
+    public Member(String id, String name, String gender, String address,LocalDate joinedDate, String fees, String specialDescription, String membershipType, String memberId, Double regFee, String regStatus, String membershipStatus, String qrCode, String residence, String city, String landPhone, String mobile, String dob, String civilStatus, String idType, String idNumber, String email, String officeAddress, String officeMobile, boolean reasonEndurance, boolean reasonFitness, boolean reasonWeightLoss, boolean reasonStrength, boolean reasonMuscle, boolean newspaper, boolean leaflet, boolean friend, boolean member, boolean facebook, String emergencyName, String emergencyRelationship, String emergencyMobile, String emergencyLand, List<String> parq, String weight, String height, String fat, Boolean termsAccepted, String liabilityDate, String memberSignature, String note, String dateOffice, String signatureOwner) {
         this.id = id;
         this.name = name;
         this.gender = gender;
-        this.username = username;
-        this.password = password;
         this.address = address;
-        this.phone = phone;
         this.joinedDate = joinedDate;
         this.fees = fees;
         this.specialDescription = specialDescription;
@@ -132,7 +126,7 @@ public class Member {
         this.memberSignature = memberSignature;
         this.note = note;
         this.dateOffice = dateOffice;
-        this.signatureowner = signatureowner;
+        this.signatureOwner = signatureOwner;
     }
 
     public String getId() {
@@ -159,29 +153,7 @@ public class Member {
         this.gender = gender;
     }
 
-    public String getUsername() {
-        return username;
-    }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
 
     public String getAddress() {
         return address;
@@ -536,11 +508,11 @@ public class Member {
     }
 
     public String getSignatureowner() {
-        return signatureowner;
+        return signatureOwner;
     }
 
-    public void setSignatureowner(String signatureowner) {
-        this.signatureowner = signatureowner;
+    public void setSignatureOwner(String signatureOwner) {
+        this.signatureOwner = signatureOwner;
     }
 }
 
