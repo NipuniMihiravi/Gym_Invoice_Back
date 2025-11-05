@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
+import java.util.List;
 
 
 @Document(collection = "members")
@@ -11,6 +12,7 @@ public class Member {
     @Id
     private String id;
 
+    // Existing fields (NOT removed)
     private String name;
     private String gender;
     private String username;
@@ -19,7 +21,6 @@ public class Member {
     private String address;
     private LocalDate joinedDate;
     private String fees;
-    private String occupation;
     private String specialDescription;
     private String membershipType;
     private String memberId;
@@ -28,7 +29,59 @@ public class Member {
     private String membershipStatus;
     private String qrCode;
 
-    public Member(String id, String name,String gender, String username, String password, String phone, String address,LocalDate joinedDate,String fees, String occupation, String specialDescription, String membershipType, String memberId, Double regFee, String regStatus, String membershipStatus, String qrCode) {
+    // ✅ Newly added form fields
+
+    private String residence;
+    private String city;
+    private String landPhone;
+    private String mobile;
+    private String dob;
+    private String civilStatus;
+    private String idType;
+    private String idNumber;
+    private String email;
+    private String officeAddress;
+    private String officeMobile;
+
+    // ✅ Reasons for joining
+    private boolean reasonEndurance;
+    private boolean reasonFitness;
+    private boolean reasonWeightLoss;
+    private boolean reasonStrength;
+    private boolean reasonMuscle;
+
+    // ✅ How did you hear about us
+    private boolean newspaper;
+    private boolean leaflet;
+    private boolean friend;
+    private boolean member;
+    private boolean facebook;
+
+    // ✅ Emergency contact
+    private String emergencyName;
+    private String emergencyRelationship;
+    private String emergencyMobile;
+    private String emergencyLand;
+
+    // ✅ PAR-Q questions (7 Yes/No)
+    private List<String> parq;
+
+    // ✅ Measurements
+    private String weight;
+    private String height;
+    private String fat;
+
+    // ✅ Liability form fields
+    private Boolean termsAccepted;
+    private String liabilityDate;
+    private String memberSignature;
+
+    // ✅ Office use
+    private String note;
+    private String dateOffice;
+    private String signatureowner;
+
+    public Member(String id, String name,String gender, String username, String password, String phone, String address,LocalDate joinedDate,String fees, String specialDescription, String membershipType, String memberId, Double regFee, String regStatus, String membershipStatus, String qrCode) {
         this.id = id;
         this.gender = gender;
         this.name = name;
@@ -38,7 +91,7 @@ public class Member {
         this.address = address;
         this.joinedDate = joinedDate;
         this.fees = fees;
-        this.occupation = occupation;
+
         this.specialDescription = specialDescription;
         this.membershipType = membershipType;
         this.memberId = memberId;
@@ -122,13 +175,7 @@ public class Member {
         this.fees = fees;
     }
 
-    public String getOccupation() {
-        return occupation;
-    }
 
-    public void setOccupation(String occupation) {
-        this.occupation = occupation;
-    }
 
     public String getSpecialDescription() {
         return specialDescription;
