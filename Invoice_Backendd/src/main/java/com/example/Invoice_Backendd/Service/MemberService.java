@@ -112,7 +112,7 @@ public class MemberService {
                     byte[] qrCodeImage = QRCodeGenerator.generateQRCodeImage(qrData, 300, 300);
 
                     emailService.sendMemberQRCode(
-                            saved.getUsername(),
+                            saved.getName(),
                             "Welcome to Pulse Fitness - Membership Activated!",
                             "<h3>Hello " + saved.getName() + ",</h3>" +
                                     "<p>Your membership is now <b>ACTIVE</b>. Please find your QR code attached.</p>",
@@ -158,7 +158,7 @@ public class MemberService {
                         Filters.ne("membershipStatus", "Inactive")
                 )),
                 Aggregates.project(Projections.fields(
-                        Projections.include("memberId", "name", "phone", "joinedDate", "membershipType", "lastPaymentDate", "nextDueDate")
+                        Projections.include("memberId", "name", "mobile", "joinedDate", "membershipType", "lastPaymentDate", "nextDueDate")
                 ))
         );
 
@@ -215,7 +215,7 @@ public class MemberService {
 
                 // Final result projection
                 Aggregates.project(Projections.fields(
-                        Projections.include("_id", "memberId", "name", "phone", "memberEmail", "joinedDate",
+                        Projections.include("_id", "memberId", "name", "mobile", "email", "joinedDate",
                                 "lastPaymentDate", "nextDueDate", "membershipType")
                 ))
         );
