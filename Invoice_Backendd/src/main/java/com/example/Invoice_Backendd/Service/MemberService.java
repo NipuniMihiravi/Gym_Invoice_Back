@@ -170,46 +170,53 @@ public class MemberService {
     public List<Document> getOverdueAttendanceMembers() {
 
         List<Bson> pipeline = Arrays.asList(
+
+                // Join payments table
                 Aggregates.lookup("payments", "memberId", "memberId", "payments"),
 
+                // Convert payment dates to Date and get MAX payment date or joined date
                 Aggregates.addFields(new Field<>("lastPaymentDate",
                         new Document("$ifNull", Arrays.asList(
-                                new Document("$max", "$payments.date"),
-                                "$joinedDate"
+                                new Document("$max", new Document("$map", new Document()
+                                        .append("input", "$payments")
+                                        .append("as", "p")
+                                        .append("in", new Document("$toDate", "$$p.date"))
+                                )),
+                                new Document("$toDate", "$joinedDate")
                         ))
                 )),
 
+                // Calculate next due date based on membership type
                 Aggregates.addFields(new Field<>("nextDueDate",
-                        new Document("$dateAdd", new Document("startDate", "$lastPaymentDate")
+                        new Document("$dateAdd", new Document()
+                                .append("startDate", "$lastPaymentDate")
                                 .append("unit", "month")
-                                .append("amount", 1)
+                                .append("amount", new Document("$switch", new Document()
+                                        .append("branches", Arrays.asList(
+                                                new Document("case", new Document("$in", Arrays.asList("$membershipType", Arrays.asList("one-one", "one-two"))))
+                                                        .append("then", 1),
+                                                new Document("case", new Document("$in", Arrays.asList("$membershipType", Arrays.asList("three-one", "three-two"))))
+                                                        .append("then", 3),
+                                                new Document("case", new Document("$in", Arrays.asList("$membershipType", Arrays.asList("six-one", "six-two"))))
+                                                        .append("then", 6),
+                                                new Document("case", new Document("$in", Arrays.asList("$membershipType", Arrays.asList("twelve-one", "twelve-two"))))
+                                                        .append("then", 12)
+                                        ))
+                                        .append("default", 1)
+                                ))
                         )
                 )),
 
+                // Filter overdue
                 Aggregates.match(Filters.and(
                         Filters.lt("nextDueDate", new Date()),
                         Filters.ne("membershipStatus", "Inactive")
                 )),
 
-                // ✅ JOIN attendance table
-                Aggregates.lookup("attendance", "memberId", "memberId", "attendanceRecords"),
-
-                // ✅ Filter only attendance after due date
-                Aggregates.addFields(new Field<>("lateAttendance",
-                        new Document("$filter", new Document()
-                                .append("input", "$attendanceRecords")
-                                .append("as", "a")
-                                .append("cond", new Document("$gt", Arrays.asList("$$a.date", "$nextDueDate")))
-                        )
-                )),
-
-                // ✅ Count late attendance
-                Aggregates.addFields(new Field<>("lateDays", new Document("$size", "$lateAttendance"))),
-
-                // ✅ Final result fields
+                // Final result projection
                 Aggregates.project(Projections.fields(
-                        Projections.include("memberId", "name", "phone", "joinedDate",
-                                "lastPaymentDate", "nextDueDate", "lateDays", "lateAttendance")
+                        Projections.include("_id", "memberId", "name", "phone", "memberEmail", "joinedDate",
+                                "lastPaymentDate", "nextDueDate", "membershipType")
                 ))
         );
 
