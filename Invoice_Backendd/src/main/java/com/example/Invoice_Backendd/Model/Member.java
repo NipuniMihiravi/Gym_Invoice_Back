@@ -81,17 +81,16 @@ public class Member {
     private String dateOffice;
     private String signatureowner;
 
-    public Member(String id, String name,String gender, String username, String password, String phone, String address,LocalDate joinedDate,String fees, String specialDescription, String membershipType, String memberId, Double regFee, String regStatus, String membershipStatus, String qrCode) {
+    public Member(String id, String name, String gender, String username, String password, String address, String phone, LocalDate joinedDate, String fees, String specialDescription, String membershipType, String memberId, Double regFee, String regStatus, String membershipStatus, String qrCode, String residence, String city, String landPhone, String mobile, String dob, String civilStatus, String idType, String idNumber, String email, String officeAddress, String officeMobile, boolean reasonEndurance, boolean reasonFitness, boolean reasonWeightLoss, boolean reasonStrength, boolean reasonMuscle, boolean newspaper, boolean leaflet, boolean friend, boolean member, boolean facebook, String emergencyName, String emergencyRelationship, String emergencyMobile, String emergencyLand, List<String> parq, String weight, String height, String fat, Boolean termsAccepted, String liabilityDate, String memberSignature, String note, String dateOffice, String signatureowner) {
         this.id = id;
-        this.gender = gender;
         this.name = name;
+        this.gender = gender;
         this.username = username;
         this.password = password;
-        this.phone = phone;
         this.address = address;
+        this.phone = phone;
         this.joinedDate = joinedDate;
         this.fees = fees;
-
         this.specialDescription = specialDescription;
         this.membershipType = membershipType;
         this.memberId = memberId;
@@ -99,6 +98,41 @@ public class Member {
         this.regStatus = regStatus;
         this.membershipStatus = membershipStatus;
         this.qrCode = qrCode;
+        this.residence = residence;
+        this.city = city;
+        this.landPhone = landPhone;
+        this.mobile = mobile;
+        this.dob = dob;
+        this.civilStatus = civilStatus;
+        this.idType = idType;
+        this.idNumber = idNumber;
+        this.email = email;
+        this.officeAddress = officeAddress;
+        this.officeMobile = officeMobile;
+        this.reasonEndurance = reasonEndurance;
+        this.reasonFitness = reasonFitness;
+        this.reasonWeightLoss = reasonWeightLoss;
+        this.reasonStrength = reasonStrength;
+        this.reasonMuscle = reasonMuscle;
+        this.newspaper = newspaper;
+        this.leaflet = leaflet;
+        this.friend = friend;
+        this.member = member;
+        this.facebook = facebook;
+        this.emergencyName = emergencyName;
+        this.emergencyRelationship = emergencyRelationship;
+        this.emergencyMobile = emergencyMobile;
+        this.emergencyLand = emergencyLand;
+        this.parq = parq;
+        this.weight = weight;
+        this.height = height;
+        this.fat = fat;
+        this.termsAccepted = termsAccepted;
+        this.liabilityDate = liabilityDate;
+        this.memberSignature = memberSignature;
+        this.note = note;
+        this.dateOffice = dateOffice;
+        this.signatureowner = signatureowner;
     }
 
     public String getId() {
@@ -108,8 +142,6 @@ public class Member {
     public void setId(String id) {
         this.id = id;
     }
-
-
 
     public String getName() {
         return name;
@@ -175,8 +207,6 @@ public class Member {
         this.fees = fees;
     }
 
-
-
     public String getSpecialDescription() {
         return specialDescription;
     }
@@ -231,6 +261,286 @@ public class Member {
 
     public void setQrCode(String qrCode) {
         this.qrCode = qrCode;
+    }
+
+    public String getResidence() {
+        return residence;
+    }
+
+    public void setResidence(String residence) {
+        this.residence = residence;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getLandPhone() {
+        return landPhone;
+    }
+
+    public void setLandPhone(String landPhone) {
+        this.landPhone = landPhone;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
+    }
+
+    public String getDob() {
+        return dob;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
+    public String getCivilStatus() {
+        return civilStatus;
+    }
+
+    public void setCivilStatus(String civilStatus) {
+        this.civilStatus = civilStatus;
+    }
+
+    public String getIdType() {
+        return idType;
+    }
+
+    public void setIdType(String idType) {
+        this.idType = idType;
+    }
+
+    public String getIdNumber() {
+        return idNumber;
+    }
+
+    public void setIdNumber(String idNumber) {
+        this.idNumber = idNumber;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getOfficeAddress() {
+        return officeAddress;
+    }
+
+    public void setOfficeAddress(String officeAddress) {
+        this.officeAddress = officeAddress;
+    }
+
+    public String getOfficeMobile() {
+        return officeMobile;
+    }
+
+    public void setOfficeMobile(String officeMobile) {
+        this.officeMobile = officeMobile;
+    }
+
+    public boolean isReasonEndurance() {
+        return reasonEndurance;
+    }
+
+    public void setReasonEndurance(boolean reasonEndurance) {
+        this.reasonEndurance = reasonEndurance;
+    }
+
+    public boolean isReasonFitness() {
+        return reasonFitness;
+    }
+
+    public void setReasonFitness(boolean reasonFitness) {
+        this.reasonFitness = reasonFitness;
+    }
+
+    public boolean isReasonWeightLoss() {
+        return reasonWeightLoss;
+    }
+
+    public void setReasonWeightLoss(boolean reasonWeightLoss) {
+        this.reasonWeightLoss = reasonWeightLoss;
+    }
+
+    public boolean isReasonStrength() {
+        return reasonStrength;
+    }
+
+    public void setReasonStrength(boolean reasonStrength) {
+        this.reasonStrength = reasonStrength;
+    }
+
+    public boolean isReasonMuscle() {
+        return reasonMuscle;
+    }
+
+    public void setReasonMuscle(boolean reasonMuscle) {
+        this.reasonMuscle = reasonMuscle;
+    }
+
+    public boolean isLeaflet() {
+        return leaflet;
+    }
+
+    public void setLeaflet(boolean leaflet) {
+        this.leaflet = leaflet;
+    }
+
+    public boolean isNewspaper() {
+        return newspaper;
+    }
+
+    public void setNewspaper(boolean newspaper) {
+        this.newspaper = newspaper;
+    }
+
+    public boolean isFriend() {
+        return friend;
+    }
+
+    public void setFriend(boolean friend) {
+        this.friend = friend;
+    }
+
+    public boolean isMember() {
+        return member;
+    }
+
+    public void setMember(boolean member) {
+        this.member = member;
+    }
+
+    public boolean isFacebook() {
+        return facebook;
+    }
+
+    public void setFacebook(boolean facebook) {
+        this.facebook = facebook;
+    }
+
+    public String getEmergencyName() {
+        return emergencyName;
+    }
+
+    public void setEmergencyName(String emergencyName) {
+        this.emergencyName = emergencyName;
+    }
+
+    public String getEmergencyRelationship() {
+        return emergencyRelationship;
+    }
+
+    public void setEmergencyRelationship(String emergencyRelationship) {
+        this.emergencyRelationship = emergencyRelationship;
+    }
+
+    public String getEmergencyMobile() {
+        return emergencyMobile;
+    }
+
+    public void setEmergencyMobile(String emergencyMobile) {
+        this.emergencyMobile = emergencyMobile;
+    }
+
+    public String getEmergencyLand() {
+        return emergencyLand;
+    }
+
+    public void setEmergencyLand(String emergencyLand) {
+        this.emergencyLand = emergencyLand;
+    }
+
+    public List<String> getParq() {
+        return parq;
+    }
+
+    public void setParq(List<String> parq) {
+        this.parq = parq;
+    }
+
+    public String getWeight() {
+        return weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+
+    public String getHeight() {
+        return height;
+    }
+
+    public void setHeight(String height) {
+        this.height = height;
+    }
+
+    public String getFat() {
+        return fat;
+    }
+
+    public void setFat(String fat) {
+        this.fat = fat;
+    }
+
+    public Boolean getTermsAccepted() {
+        return termsAccepted;
+    }
+
+    public void setTermsAccepted(Boolean termsAccepted) {
+        this.termsAccepted = termsAccepted;
+    }
+
+    public String getLiabilityDate() {
+        return liabilityDate;
+    }
+
+    public void setLiabilityDate(String liabilityDate) {
+        this.liabilityDate = liabilityDate;
+    }
+
+    public String getMemberSignature() {
+        return memberSignature;
+    }
+
+    public void setMemberSignature(String memberSignature) {
+        this.memberSignature = memberSignature;
+    }
+
+    public String getNote() {
+        return note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
+    public String getDateOffice() {
+        return dateOffice;
+    }
+
+    public void setDateOffice(String dateOffice) {
+        this.dateOffice = dateOffice;
+    }
+
+    public String getSignatureowner() {
+        return signatureowner;
+    }
+
+    public void setSignatureowner(String signatureowner) {
+        this.signatureowner = signatureowner;
     }
 }
 
