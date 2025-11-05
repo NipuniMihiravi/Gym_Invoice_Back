@@ -25,30 +25,27 @@ public class PaymentController {
     @Autowired
     private PaymentRepository paymentRepository;
 
-    @PostMapping("/payments")
+    @PostMapping
     public ResponseEntity<Payment> createPayment(@RequestBody Map<String, Object> payload) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-        // Create a new Payment object
-        Payment payment = new Payment();  // ✅ no-arg constructor must exist in Payment class
+            Payment payment = new Payment();
+            payment.setMemberId((String) payload.get("memberId"));
+            payment.setAmount(Double.parseDouble(payload.get("amount").toString()));
+            payment.setDate(LocalDate.parse((String) payload.get("date"), formatter));      // Next Due Date
+            payment.setPayDate(LocalDate.parse((String) payload.get("payDate"), formatter)); // Actual payment date
+            payment.setStatus((String) payload.get("status"));
+            payment.setPaymentMethod((String) payload.get("paymentMethod"));
 
-        // Set values from payload
-        payment.setMemberId((String) payload.get("memberId"));
-        payment.setMemberName((String) payload.get("memberName"));
-        payment.setMemberEmail((String) payload.get("memberEmail"));
-        payment.setMembershipType((String) payload.get("membershipType"));
-        payment.setStatus((String) payload.get("status"));
-        payment.setPaymentMethod((String) payload.get("paymentMethod"));
-        payment.setAmount(Double.parseDouble(payload.get("amount").toString()));
-        payment.setJoinedDate(LocalDate.parse((String) payload.get("joinedDate"), formatter));
-        payment.setDate(LocalDate.parse((String) payload.get("date"), formatter));
-        payment.setPayDate(LocalDate.parse((String) payload.get("payDate"), formatter));
+            Payment saved = paymentService.addPayment(payment);
 
-        // Save to repository
-        Payment saved = paymentRepository.save(payment);
-        return ResponseEntity.ok(saved);
+            return ResponseEntity.ok(saved);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
     }
-
 
     @GetMapping
     public List<Payment> getAllPayments() {
