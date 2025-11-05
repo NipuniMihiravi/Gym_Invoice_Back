@@ -18,29 +18,9 @@ public class PaymentController {
     @Autowired
     private PaymentService paymentService;
 
-    @Autowired
-    private EmailService emailService;
 
-    @PostMapping
-    public Payment createPayment(@RequestBody Payment payment) {
-        Payment savedPayment = paymentService.addPayment(payment);
 
-        // Send Email Notification
-        try {
-            emailService.sendPaymentEmail(
-                    savedPayment.getMemberEmail(),   // email
-                    savedPayment.getMemberId(),      // memberId (make sure your Payment model has this)
-                    savedPayment.getMemberName(),    // memberName
-                    savedPayment.getMonth(),
-                    savedPayment.getStatus(),
-                    savedPayment.getAmount()
-            );
-        } catch (Exception e) {
-            System.out.println("Failed to send email: " + e.getMessage());
-        }
 
-        return savedPayment;
-    }
     @GetMapping
     public List<Payment> getAllPayments() {
         return paymentService.getAllPayments();

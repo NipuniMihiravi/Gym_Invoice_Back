@@ -52,24 +52,23 @@ public class PaymentService {
     }
 
     public Payment updatePayment(String id, Payment updatedPayment) {
-        Optional<Payment> optionalPayment = paymentRepository.findById(id);
-
-        if (optionalPayment.isPresent()) {
-            Payment payment = optionalPayment.get();
-
-            // ✅ Update all relevant fields
+        return paymentRepository.findById(id).map(payment -> {
+            // Update all relevant fields
             payment.setAmount(updatedPayment.getAmount());
-            payment.setDate(updatedPayment.getDate());
-            payment.setMonth(updatedPayment.getMonth());
-            payment.setYear(updatedPayment.getYear());
+            payment.setDate(updatedPayment.getDate());       // due date
+            payment.setPayDate(updatedPayment.getPayDate()); // actual payment date
             payment.setStatus(updatedPayment.getStatus());
             payment.setJoinedDate(updatedPayment.getJoinedDate());
             payment.setMembershipType(updatedPayment.getMembershipType());
+            payment.setPaymentMethod(updatedPayment.getPaymentMethod());
+            payment.setMemberId(updatedPayment.getMemberId());
+            payment.setMemberName(updatedPayment.getMemberName());
+            payment.setMemberEmail(updatedPayment.getMemberEmail());
 
             return paymentRepository.save(payment);
-        }
-        return null;
+        }).orElse(null); // or throw an exception if you prefer
     }
+
 
     public String deletePayment(String id) {
         paymentRepository.deleteById(id);

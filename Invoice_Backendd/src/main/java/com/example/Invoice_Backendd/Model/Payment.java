@@ -13,13 +13,13 @@ public class Payment {
     private String memberId;
     private String memberName;
     private String memberEmail;
-    private int year;
-    private String month;
-    private double amount;
-    private LocalDate date;
     private LocalDate joinedDate;
     private String membershipType;
-    private String status; // e.g. "Pending", "Done"
+    private LocalDate date;      // Next Due Date
+    private LocalDate payDate;   // Actual Payment Date
+    private double amount;
+    private String status;
+    private String paymentMethod;
 
     public String getId() {
         return id;
@@ -53,38 +53,6 @@ public class Payment {
         this.memberEmail = memberEmail;
     }
 
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public String getMonth() {
-        return month;
-    }
-
-    public void setMonth(String month) {
-        this.month = month;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
     public LocalDate getJoinedDate() {
         return joinedDate;
     }
@@ -101,6 +69,30 @@ public class Payment {
         this.membershipType = membershipType;
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public LocalDate getPayDate() {
+        return payDate;
+    }
+
+    public void setPayDate(LocalDate payDate) {
+        this.payDate = payDate;
+    }
+
+    public double getAmount() {
+        return amount;
+    }
+
+    public void setAmount(double amount) {
+        this.amount = amount;
+    }
+
     public String getStatus() {
         return status;
     }
@@ -109,17 +101,25 @@ public class Payment {
         this.status = status;
     }
 
-    public Payment(String id, String memberId, String memberName, String memberEmail, int year, String month, double amount, LocalDate date, LocalDate joinedDate, String membershipType, String status) {
+    public String getPaymentMethod() {
+        return paymentMethod;
+    }
+
+    public void setPaymentMethod(String paymentMethod) {
+        this.paymentMethod = paymentMethod;
+    }
+
+    public Payment(String id, String memberId, String memberName, LocalDate joinedDate, String memberEmail, String membershipType, LocalDate date, LocalDate payDate, double amount, String status, String paymentMethod) {
         this.id = id;
         this.memberId = memberId;
         this.memberName = memberName;
-        this.memberEmail = memberEmail;
-        this.year = year;
-        this.month = month;
-        this.amount = amount;
-        this.date = date;
         this.joinedDate = joinedDate;
+        this.memberEmail = memberEmail;
         this.membershipType = membershipType;
+        this.date = date;
+        this.payDate = payDate;
+        this.amount = amount;
         this.status = status;
+        this.paymentMethod = paymentMethod;
     }
 }
