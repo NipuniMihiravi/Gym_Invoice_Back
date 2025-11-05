@@ -97,76 +97,15 @@ public class MemberService {
     // ✅ Update member and send email if ACTIVE
     public Member updateMember(String id, Member updatedMember) {
         return memberRepository.findById(id).map(member -> {
+            updatedMember.setId(id);
 
-            member.setName(updatedMember.getName());
-            member.setGender(updatedMember.getGender());
-            member.setUsername(updatedMember.getUsername());
-            member.setPassword(updatedMember.getPassword());
-            member.setAddress(updatedMember.getAddress());
-            member.setPhone(updatedMember.getPhone());
-            member.setJoinedDate(updatedMember.getJoinedDate());
-            member.setFees(updatedMember.getFees());
-            member.setSpecialDescription(updatedMember.getSpecialDescription());
-            member.setMembershipType(updatedMember.getMembershipType());
-            member.setRegFee(updatedMember.getRegFee());
-            member.setRegStatus(updatedMember.getRegStatus());
-            member.setMembershipStatus(updatedMember.getMembershipStatus());
+            if (updatedMember.getMemberId() == null || updatedMember.getMemberId().isEmpty()) {
+                updatedMember.setMemberId(member.getMemberId());
+            }
 
-            // New fields
-            member.setResidence(updatedMember.getResidence());
-            member.setCity(updatedMember.getCity());
-            member.setLandPhone(updatedMember.getLandPhone());
-            member.setMobile(updatedMember.getMobile());
-            member.setDob(updatedMember.getDob());
-            member.setCivilStatus(updatedMember.getCivilStatus());
-            member.setIdType(updatedMember.getIdType());
-            member.setIdNumber(updatedMember.getIdNumber());
-            member.setEmail(updatedMember.getEmail());
-            member.setOfficeAddress(updatedMember.getOfficeAddress());
-            member.setOfficeMobile(updatedMember.getOfficeMobile());
+            Member saved = memberRepository.save(updatedMember);
 
-            // Reasons
-            member.setReasonEndurance(updatedMember.isReasonEndurance());
-            member.setReasonFitness(updatedMember.isReasonFitness());
-            member.setReasonWeightLoss(updatedMember.isReasonWeightLoss());
-            member.setReasonStrength(updatedMember.isReasonStrength());
-            member.setReasonMuscle(updatedMember.isReasonMuscle());
-
-            // Marketing source
-            member.setNewspaper(updatedMember.isNewspaper());
-            member.setLeaflet(updatedMember.isLeaflet());
-            member.setFriend(updatedMember.isFriend());
-            member.setMember(updatedMember.isMember());
-            member.setFacebook(updatedMember.isFacebook());
-
-            // Emergency
-            member.setEmergencyName(updatedMember.getEmergencyName());
-            member.setEmergencyRelationship(updatedMember.getEmergencyRelationship());
-            member.setEmergencyMobile(updatedMember.getEmergencyMobile());
-            member.setEmergencyLand(updatedMember.getEmergencyLand());
-
-            // PAR-Q
-            member.setParq(updatedMember.getParq());
-
-            // Measurements
-            member.setWeight(updatedMember.getWeight());
-            member.setHeight(updatedMember.getHeight());
-            member.setFat(updatedMember.getFat());
-
-            // Liability
-            member.setTermsAccepted(updatedMember.getTermsAccepted());
-            member.setLiabilityDate(updatedMember.getLiabilityDate());
-            member.setMemberSignature(updatedMember.getMemberSignature());
-
-            // Office use
-            member.setNote(updatedMember.getNote());
-            member.setDateOffice(updatedMember.getDateOffice());
-            member.setSignatureowner(updatedMember.getSignatureowner());
-
-            // Save updated member
-            Member saved = memberRepository.save(member);
-
-            // Email QR code if ACTIVE
+            // 🔥 If status is ACTIVE, send email with QR Code as PNG
             if ("ACTIVE".equalsIgnoreCase(saved.getMembershipStatus())) {
                 try {
                     String qrData = "MemberID: " + saved.getMemberId() + "\nName: " + saved.getName();
@@ -176,10 +115,10 @@ public class MemberService {
                             saved.getUsername(),
                             "Welcome to Pulse Fitness - Membership Activated!",
                             "<h3>Hello " + saved.getName() + ",</h3>" +
-                                    "<p>Your membership is now <b>ACTIVE</b>.</p>",
+                                    "<p>Your membership is now <b>ACTIVE</b>. Please find your QR code attached.</p>",
                             qrCodeImage
                     );
-                } catch (Exception e) {
+                } catch (WriterException | IOException | MessagingException e) {
                     e.printStackTrace();
                 }
             }
@@ -187,7 +126,6 @@ public class MemberService {
             return saved;
         }).orElse(null);
     }
-
 
     public String deleteMember(String id) {
         memberRepository.deleteById(id);
