@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +47,21 @@ public class ExpenditureService {
         repo.deleteById(id);
     }
 
+    // ✅ Update an existing expenditure by ID
+    public Expenditure updateExpenditure(String id, Expenditure updatedExp) {
+        Optional<Expenditure> optional = repo.findById(id);
+        if (optional.isPresent()) {
+            Expenditure exp = optional.get();
+            exp.setName(updatedExp.getName());
+            exp.setCost(updatedExp.getCost());
+            exp.setDate(updatedExp.getDate());
+            exp.setDescription(updatedExp.getDescription());
+            return repo.save(exp);
+        } else {
+            throw new RuntimeException("Expenditure not found with id: " + id);
+        }
+    }
+
     // ✅ Get total expenditure amount (can be used in analytics)
     public double getTotalExpenditureAmount() {
         return repo.findAll().stream()
@@ -53,8 +69,14 @@ public class ExpenditureService {
                 .sum();
     }
 
-    // ✅ Get expenditures by name
+    // ✅ Get expenditures by name (optional helper)
     public List<Expenditure> getExpendituresByName(String name) {
         return repo.findByNameContainingIgnoreCase(name);
+    }
+
+    // ✅ Get single expenditure by ID
+    public Expenditure getExpenditureById(String id) {
+        return repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Expenditure not found with id: " + id));
     }
 }
