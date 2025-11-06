@@ -208,7 +208,7 @@ public class MemberService {
 
                 // 7️⃣ Project final result fields
                 Aggregates.project(Projections.fields(
-                        Projections.include("memberId", "name", "mobile", "email",
+                        Projections.include("memberId", "name", "mobile", "email","joinedDate",
                                 "membershipType", "lastPaymentDate", "nextDueDate"),
                         new Document("daysOverdue",
                                 new Document("$divide", Arrays.asList(
