@@ -58,8 +58,8 @@ public class MemberController {
     }
 
     @GetMapping("/due-members")
-    public ResponseEntity<?> getDueMembers() {
-        return ResponseEntity.ok(memberService.getDueMembers());
+    public ResponseEntity<?> getOverdueAttendanceMembers() {
+        return ResponseEntity.ok(memberService.getOverdueAttendanceMembers());
     }
 
     @GetMapping("/due-attendance")

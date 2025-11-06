@@ -37,6 +37,7 @@ public class Member {
     private String idType;
     private String idNumber;
     private String email;
+    private String profession;
     private String officeAddress;
     private String officeMobile;
 
@@ -78,7 +79,7 @@ public class Member {
     private String dateOffice;
     private String signatureOwner;
 
-    public Member(String id, String name, String gender, String address,LocalDate joinedDate, String fees, String specialDescription, String membershipType, String memberId, Double regFee, String regStatus, String membershipStatus, String qrCode, String residence, String city, String landPhone, String mobile, String dob, String civilStatus, String idType, String idNumber, String email, String officeAddress, String officeMobile, boolean reasonEndurance, boolean reasonFitness, boolean reasonWeightLoss, boolean reasonStrength, boolean reasonMuscle, boolean newspaper, boolean leaflet, boolean friend, boolean member, boolean facebook, String emergencyName, String emergencyRelationship, String emergencyMobile, String emergencyLand, List<String> parq, String weight, String height, String fat, Boolean termsAccepted, String liabilityDate, String memberSignature, String note, String dateOffice, String signatureOwner) {
+    public Member(String id, String name, String gender, String address,LocalDate joinedDate, String fees, String specialDescription, String membershipType, String memberId, Double regFee, String regStatus, String membershipStatus, String qrCode, String residence, String city, String landPhone, String mobile, String dob, String civilStatus, String idType, String idNumber, String email, String profession, String officeAddress, String officeMobile, boolean reasonEndurance, boolean reasonFitness, boolean reasonWeightLoss, boolean reasonStrength, boolean reasonMuscle, boolean newspaper, boolean leaflet, boolean friend, boolean member, boolean facebook, String emergencyName, String emergencyRelationship, String emergencyMobile, String emergencyLand, List<String> parq, String weight, String height, String fat, Boolean termsAccepted, String liabilityDate, String memberSignature, String note, String dateOffice, String signatureOwner) {
         this.id = id;
         this.name = name;
         this.gender = gender;
@@ -101,6 +102,7 @@ public class Member {
         this.idType = idType;
         this.idNumber = idNumber;
         this.email = email;
+        this.profession = profession;
         this.officeAddress = officeAddress;
         this.officeMobile = officeMobile;
         this.reasonEndurance = reasonEndurance;
@@ -128,6 +130,15 @@ public class Member {
         this.dateOffice = dateOffice;
         this.signatureOwner = signatureOwner;
     }
+
+    public String getProfession() {
+        return profession;
+    }
+
+    public void setProfession(String profession) {
+        this.profession = profession;
+    }
+
 
     public String getId() {
         return id;

@@ -137,44 +137,17 @@ public class MemberService {
         return String.format("M%05d", newId); // e.g., M00453
     }
 
-    public List<Document> getDueMembers() {
-
-        List<Bson> pipeline = Arrays.asList(
-                Aggregates.lookup("payments", "memberId", "memberId", "payments"),
-                Aggregates.addFields(new Field<>("lastPaymentDate",
-                        new Document("$ifNull", Arrays.asList(
-                                new Document("$max", "$payments.date"),
-                                "$joinedDate"
-                        ))
-                )),
-                Aggregates.addFields(new Field<>("nextDueDate",
-                        new Document("$dateAdd", new Document("startDate", "$lastPaymentDate")
-                                .append("unit", "month")
-                                .append("amount", 1)
-                        )
-                )),
-                Aggregates.match(Filters.and(
-                        Filters.lt("nextDueDate", new Date()),
-                        Filters.ne("membershipStatus", "Inactive")
-                )),
-                Aggregates.project(Projections.fields(
-                        Projections.include("memberId", "name", "mobile", "joinedDate", "membershipType", "lastPaymentDate", "nextDueDate")
-                ))
-        );
-
-        return mongoTemplate.getCollection("members")
-                .aggregate(pipeline)
-                .into(new ArrayList<>());
-    }
-
     public List<Document> getOverdueAttendanceMembers() {
 
         List<Bson> pipeline = Arrays.asList(
 
-                // Join payments table
+                // 1️⃣ Join with payments collection
                 Aggregates.lookup("payments", "memberId", "memberId", "payments"),
 
-                // Convert payment dates to Date and get MAX payment date or joined date
+                // 2️⃣ Join with attendance collection
+                Aggregates.lookup("attendance", "memberId", "memberId", "attendance"),
+
+                // 3️⃣ Add lastPaymentDate (latest payment or joinedDate)
                 Aggregates.addFields(new Field<>("lastPaymentDate",
                         new Document("$ifNull", Arrays.asList(
                                 new Document("$max", new Document("$map", new Document()
@@ -186,37 +159,63 @@ public class MemberService {
                         ))
                 )),
 
-                // Calculate next due date based on membership type
+                // 4️⃣ Calculate nextDueDate based on membership type (1, 3, 6, 12 months)
                 Aggregates.addFields(new Field<>("nextDueDate",
                         new Document("$dateAdd", new Document()
                                 .append("startDate", "$lastPaymentDate")
                                 .append("unit", "month")
                                 .append("amount", new Document("$switch", new Document()
                                         .append("branches", Arrays.asList(
-                                                new Document("case", new Document("$in", Arrays.asList("$membershipType", Arrays.asList("one-one", "one-two"))))
-                                                        .append("then", 1),
-                                                new Document("case", new Document("$in", Arrays.asList("$membershipType", Arrays.asList("three-one", "three-two"))))
-                                                        .append("then", 3),
-                                                new Document("case", new Document("$in", Arrays.asList("$membershipType", Arrays.asList("six-one", "six-two"))))
-                                                        .append("then", 6),
-                                                new Document("case", new Document("$in", Arrays.asList("$membershipType", Arrays.asList("twelve-one", "twelve-two"))))
-                                                        .append("then", 12)
+                                                new Document("case", new Document("$in", Arrays.asList(
+                                                        "$membershipType", Arrays.asList("one-one", "one-two")
+                                                ))).append("then", 1),
+                                                new Document("case", new Document("$in", Arrays.asList(
+                                                        "$membershipType", Arrays.asList("three-one", "three-two")
+                                                ))).append("then", 3),
+                                                new Document("case", new Document("$in", Arrays.asList(
+                                                        "$membershipType", Arrays.asList("six-one", "six-two")
+                                                ))).append("then", 6),
+                                                new Document("case", new Document("$in", Arrays.asList(
+                                                        "$membershipType", Arrays.asList("twelve-one", "twelve-two")
+                                                ))).append("then", 12)
                                         ))
                                         .append("default", 1)
                                 ))
                         )
                 )),
 
-                // Filter overdue
+                // 5️⃣ Add computed field: hasRecentAttendance
+                // True if the member has any attendance AFTER nextDueDate
+                Aggregates.addFields(new Field<>("hasRecentAttendance",
+                        new Document("$gt", Arrays.asList(
+                                new Document("$size", new Document("$filter", new Document()
+                                        .append("input", "$attendance")
+                                        .append("as", "a")
+                                        .append("cond", new Document("$gt", Arrays.asList(
+                                                new Document("$toDate", "$$a.date"), "$nextDueDate"
+                                        )))
+                                )),
+                                0
+                        ))
+                )),
+
+                // 6️⃣ Filter overdue & active members
                 Aggregates.match(Filters.and(
                         Filters.lt("nextDueDate", new Date()),
+                        Filters.eq("hasRecentAttendance", true),
                         Filters.ne("membershipStatus", "Inactive")
                 )),
 
-                // Final result projection
+                // 7️⃣ Project final result fields
                 Aggregates.project(Projections.fields(
-                        Projections.include("_id", "memberId", "name", "mobile", "email", "joinedDate",
-                                "lastPaymentDate", "nextDueDate", "membershipType")
+                        Projections.include("memberId", "name", "mobile", "email",
+                                "membershipType", "lastPaymentDate", "nextDueDate"),
+                        new Document("daysOverdue",
+                                new Document("$divide", Arrays.asList(
+                                        new Document("$subtract", Arrays.asList(new Date(), "$nextDueDate")),
+                                        1000 * 60 * 60 * 24
+                                ))
+                        )
                 ))
         );
 
@@ -224,5 +223,6 @@ public class MemberService {
                 .aggregate(pipeline)
                 .into(new ArrayList<>());
     }
+
 
 }
