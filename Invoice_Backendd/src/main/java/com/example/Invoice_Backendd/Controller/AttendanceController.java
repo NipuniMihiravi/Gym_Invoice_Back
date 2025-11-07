@@ -48,7 +48,7 @@ public class AttendanceController {
     }
 
     // GET: Get all attendance records
-    @GetMapping("/all")
+    @GetMapping
     public List<Attendance> getAllAttendance() {
         return attendanceService.getAllAttendance();
     }
