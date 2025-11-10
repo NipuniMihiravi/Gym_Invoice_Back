@@ -134,8 +134,9 @@ public class MemberService {
 
     public String generateMemberId() {
         long newId = sequenceGeneratorService.getNextSequence("memberId");
-        return String.format("M%05d", newId); // e.g., M00453
+        return String.valueOf(newId); // e.g., 1, 2, 3, 4...
     }
+
 
     public List<Document> getOverdueAttendanceMembers() {
 
