@@ -41,7 +41,7 @@ public class AttendanceController {
         Attendance attendance = new Attendance();
         attendance.setMemberId(memberId);
         attendance.setDate(today);
-        attendance.setTime(LocalTime.now());
+        attendance.setTime(LocalTime.now().toString());
 
         attendanceRepository.save(attendance);
         return ResponseEntity.ok("Attendance marked successfully!");

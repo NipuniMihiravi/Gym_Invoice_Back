@@ -15,7 +15,7 @@ public class AttendanceService {
     @Autowired
     private AttendanceRepository attendanceRepository;
 
-    // Mark attendance with duplicate check
+    // ✅ Mark attendance with duplicate check
     public String markAttendance(String memberId) {
         LocalDate today = LocalDate.now();
 
@@ -25,18 +25,22 @@ public class AttendanceService {
             return "Attendance already marked for today!";
         }
 
-        Attendance attendance = new Attendance(memberId, today, LocalTime.now());
+        // ✅ Get current time as string
+        String currentTime = LocalTime.now().toString();
+
+        // ✅ Create new attendance record
+        Attendance attendance = new Attendance(memberId, today, currentTime);
         attendanceRepository.save(attendance);
 
-        return "Attendance marked for Member: " + memberId;
+        return "Attendance marked for Member: " + memberId + " at " + currentTime;
     }
 
-    // Get all attendance records
+    // ✅ Get all attendance records
     public List<Attendance> getAllAttendance() {
         return attendanceRepository.findAll();
     }
 
-    // Get attendance records for a specific member
+    // ✅ Get attendance records for a specific member
     public List<Attendance> getAttendanceByMember(String memberId) {
         return attendanceRepository.findByMemberId(memberId);
     }

@@ -18,14 +18,14 @@ public class Attendance {
 
     private String memberId;
     private LocalDate date;
-    private LocalTime time; // corrected type
+    private String time; // corrected type
 
     // Default constructor (required by Spring Data)
     public Attendance() {
     }
 
     // Constructor with memberId and date
-    public Attendance(String memberId, LocalDate date, LocalTime time) {
+    public Attendance(String memberId, LocalDate date, String time) {
         this.memberId = memberId;
         this.date = date;
         this.time = time;
@@ -40,6 +40,6 @@ public class Attendance {
     public LocalDate getDate() { return date; }
     public void setDate(LocalDate date) { this.date = date; }
 
-    public LocalTime getTime() { return time; }
-    public void setTime(LocalTime time) { this.time = time; }
+    public String getTime() { return time; }
+    public void setTime(String time) { this.time = time; }
 }
