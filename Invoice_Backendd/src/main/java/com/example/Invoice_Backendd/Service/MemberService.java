@@ -111,17 +111,24 @@ public class MemberService {
                     String qrData = "MemberID: " + saved.getMemberId() + "\nName: " + saved.getName();
                     byte[] qrCodeImage = QRCodeGenerator.generateQRCodeImage(qrData, 300, 300);
 
+                    // Compose email body including Member ID
+                    String emailBody = "<h3 style='color:#2E8B57;'>Hello " + saved.getName() + " (Member ID: " + saved.getMemberId() + ")</h3>" +
+                            "<p style='color:#FF4500;'>Your membership is now <b>ACTIVE</b>. Please find your QR code attached.</p>" +
+                            "<p style='color:#0000FF;'>Thank you for staying fit with <b>Pulse Fitness</b>!</p>";
+
+
                     emailService.sendMemberQRCode(
-                            saved.getName(),
+                            saved.getEmail(),                      // Member email
                             "Welcome to Pulse Fitness - Membership Activated!",
-                            "<h3>Hello " + saved.getName() + ",</h3>" +
-                                    "<p>Your membership is now <b>ACTIVE</b>. Please find your QR code attached.</p>",
-                            qrCodeImage
+                            emailBody,                             // Body with Member ID
+                            qrCodeImage                             // QR code attachment
                     );
                 } catch (WriterException | IOException | MessagingException e) {
                     e.printStackTrace();
                 }
             }
+
+
 
             return saved;
         }).orElse(null);
