@@ -215,16 +215,24 @@ public class MemberService {
                 )),
 
                 // 7️⃣ Project final result fields
+                // 7️⃣ Project final result fields
                 Aggregates.project(Projections.fields(
-                        Projections.include("memberId", "name", "mobile", "email","joinedDate",
-                                "membershipType", "lastPaymentDate", "nextDueDate"),
-                        new Document("daysOverdue",
-                                new Document("$divide", Arrays.asList(
-                                        new Document("$subtract", Arrays.asList(new Date(), "$nextDueDate")),
-                                        1000 * 60 * 60 * 24
+                        Projections.include(
+                                "memberId", "name", "mobile", "email", "joinedDate",
+                                "membershipType", "lastPaymentDate", "nextDueDate"
+                        ),
+                        // ✅ Count attendance after due date
+                        new Document("attendanceAfterDue",
+                                new Document("$size", new Document("$filter", new Document()
+                                        .append("input", "$attendance")
+                                        .append("as", "a")
+                                        .append("cond", new Document("$gt", Arrays.asList(
+                                                new Document("$toDate", "$$a.date"), "$nextDueDate"
+                                        )))
                                 ))
                         )
                 ))
+
         );
 
         return mongoTemplate.getCollection("members")
