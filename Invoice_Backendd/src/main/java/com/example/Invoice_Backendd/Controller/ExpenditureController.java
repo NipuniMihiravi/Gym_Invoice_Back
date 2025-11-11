@@ -29,24 +29,36 @@ public class ExpenditureController {
         return repo.findAll();
     }
 
-    // ✅ Filter expenditures
     @GetMapping("/filter")
     public List<Expenditure> filterExpenditures(
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String fromDate,
             @RequestParam(required = false) String toDate) {
 
-        LocalDate from = (fromDate != null && !fromDate.isEmpty()) ? LocalDate.parse(fromDate) : LocalDate.MIN;
-        LocalDate to = (toDate != null && !toDate.isEmpty()) ? LocalDate.parse(toDate) : LocalDate.now();
+        LocalDate from;
+        LocalDate to;
 
+        try {
+            from = (fromDate != null && !fromDate.isEmpty()) ? LocalDate.parse(fromDate) : LocalDate.of(1970, 1, 1);
+            to = (toDate != null && !toDate.isEmpty()) ? LocalDate.parse(toDate) : LocalDate.now();
+        } catch (Exception e) {
+            throw new RuntimeException("Invalid date format. Use yyyy-MM-dd");
+        }
+
+        // ✅ Fetch records within date range
         List<Expenditure> list = repo.findByDateBetween(from, to);
 
-        if (name != null && !name.isEmpty()) {
-            list.removeIf(e -> !e.getName().toLowerCase().contains(name.toLowerCase()));
+        // ✅ Optional name filter (case-insensitive)
+        if (name != null && !name.trim().isEmpty()) {
+            list.removeIf(e -> e.getName() == null || !e.getName().toLowerCase().contains(name.toLowerCase()));
         }
+
+        // ✅ Sort newest first by date
+        list.sort((a, b) -> b.getDate().compareTo(a.getDate()));
 
         return list;
     }
+
 
     // ✅ Update expenditure
     @PutMapping("/{id}")
