@@ -192,53 +192,36 @@ public class MemberService {
                         )
                 )),
 
-                // 5️⃣ Add computed field: hasRecentAttendance
-                // True if the member has any attendance AFTER nextDueDate
-                Aggregates.addFields(new Field<>("hasRecentAttendance",
-                        new Document("$gt", Arrays.asList(
-                                new Document("$size", new Document("$filter", new Document()
-                                        .append("input", "$attendance")
-                                        .append("as", "a")
-                                        .append("cond", new Document("$gt", Arrays.asList(
-                                                new Document("$toDate", "$$a.date"), "$nextDueDate"
-                                        )))
-                                )),
-                                0
+                // 5️⃣ Filter members who have attendance after due date
+                Aggregates.addFields(new Field<>("attendanceAfterDueCount",
+                        new Document("$size", new Document("$filter", new Document()
+                                .append("input", "$attendance")
+                                .append("as", "a")
+                                .append("cond", new Document("$gt", Arrays.asList(
+                                        new Document("$toDate", "$$a.date"), "$nextDueDate"
+                                )))
                         ))
                 )),
 
-                // 6️⃣ Filter overdue & active members
+                // 6️⃣ Keep only active members who actually attended after due date
                 Aggregates.match(Filters.and(
-                        Filters.lt("nextDueDate", new Date()),
-                        Filters.eq("hasRecentAttendance", true),
+                        Filters.lt("nextDueDate", new Date()), // due date passed
+                        Filters.gt("attendanceAfterDueCount", 0),
                         Filters.ne("membershipStatus", "Inactive")
                 )),
 
-                // 7️⃣ Project final result fields
-                // 7️⃣ Project final result fields
+                // 7️⃣ Project the final result fields
                 Aggregates.project(Projections.fields(
-                        Projections.include(
-                                "memberId", "name", "mobile", "email", "joinedDate",
-                                "membershipType", "lastPaymentDate", "nextDueDate"
-                        ),
-                        // ✅ Count attendance after due date
-                        new Document("attendanceAfterDue",
-                                new Document("$size", new Document("$filter", new Document()
-                                        .append("input", "$attendance")
-                                        .append("as", "a")
-                                        .append("cond", new Document("$gt", Arrays.asList(
-                                                new Document("$toDate", "$$a.date"), "$nextDueDate"
-                                        )))
-                                ))
-                        )
+                        Projections.include("memberId", "name", "mobile", "email", "joinedDate",
+                                "membershipType", "lastPaymentDate", "nextDueDate", "attendanceAfterDueCount")
                 ))
-
         );
 
         return mongoTemplate.getCollection("members")
                 .aggregate(pipeline)
                 .into(new ArrayList<>());
     }
+
 
 
 }
