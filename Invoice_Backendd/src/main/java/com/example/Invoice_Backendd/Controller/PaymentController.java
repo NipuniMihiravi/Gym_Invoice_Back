@@ -28,27 +28,6 @@ public class PaymentController {
     @Autowired
     private EmailService emailService;  // ✅ inject EmailService
 
-    @PostMapping
-    public ResponseEntity<Payment> createPayment(@RequestBody Map<String, Object> payload) {
-        try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-            Payment payment = new Payment();
-            payment.setMemberId((String) payload.get("memberId"));
-            payment.setAmount(Double.parseDouble(payload.get("amount").toString()));
-            payment.setDate(LocalDate.parse((String) payload.get("date"), formatter));      // Next Due Date
-            payment.setPayDate(LocalDate.parse((String) payload.get("payDate"), formatter)); // Actual payment date
-            payment.setStatus((String) payload.get("status"));
-            payment.setPaymentMethod((String) payload.get("paymentMethod"));
-
-            Payment saved = paymentService.addPayment(payment);
-
-            return ResponseEntity.ok(saved);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).build();
-        }
-    }
 
     @PostMapping
     public ResponseEntity<Payment> createPaymentOrAbsent(@RequestBody Map<String, Object> payload) {
