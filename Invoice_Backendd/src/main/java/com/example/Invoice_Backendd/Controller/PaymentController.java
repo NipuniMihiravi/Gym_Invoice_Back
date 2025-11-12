@@ -25,6 +25,9 @@ public class PaymentController {
     @Autowired
     private PaymentRepository paymentRepository;
 
+    @Autowired
+    private EmailService emailService;  // ✅ inject EmailService
+
     @PostMapping
     public ResponseEntity<Payment> createPayment(@RequestBody Map<String, Object> payload) {
         try {
@@ -46,6 +49,51 @@ public class PaymentController {
             return ResponseEntity.status(500).build();
         }
     }
+
+    @PostMapping
+    public ResponseEntity<Payment> createPaymentOrAbsent(@RequestBody Map<String, Object> payload) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+            Payment payment = new Payment();
+            payment.setMemberId((String) payload.get("memberId"));
+            payment.setMemberName((String) payload.get("memberName"));
+            payment.setMemberEmail((String) payload.get("memberEmail"));
+            payment.setDate(LocalDate.parse((String) payload.get("date"), formatter));      // Next Due Date
+            payment.setPayDate(payload.get("payDate") != null
+                    ? LocalDate.parse((String) payload.get("payDate"), formatter)
+                    : null); // Actual payment date
+            payment.setPaymentMethod((String) payload.getOrDefault("paymentMethod", "Absent"));
+
+            boolean isAbsent = Boolean.parseBoolean(payload.getOrDefault("absent", "false").toString());
+            if (isAbsent) {
+                payment.setStatus("Absent");
+                payment.setAmount(0);
+                payment.setPaymentMethod("Absent");
+            } else {
+                payment.setStatus("Done");
+                payment.setAmount(Double.parseDouble(payload.get("amount").toString()));
+            }
+
+            Payment saved = paymentService.addPayment(payment);
+
+            // ✅ Send email for both Done and Absent
+            emailService.sendPaymentEmail(
+                    payment.getMemberEmail(),
+                    payment.getMemberId(),
+                    payment.getMemberName(),
+                    payment.getDate().getMonth().toString(),
+                    payment.getStatus(),
+                    payment.getAmount()
+            );
+
+            return ResponseEntity.ok(saved);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).build();
+        }
+    }
+
 
     @GetMapping
     public List<Payment> getAllPayments() {
