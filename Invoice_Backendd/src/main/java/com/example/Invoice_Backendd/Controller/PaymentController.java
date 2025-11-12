@@ -5,6 +5,7 @@ import com.example.Invoice_Backendd.Model.Payment;
 import com.example.Invoice_Backendd.Repository.PaymentRepository;
 import com.example.Invoice_Backendd.Service.EmailService;
 import com.example.Invoice_Backendd.Service.PaymentService;
+import jakarta.mail.MessagingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -57,16 +58,22 @@ public class PaymentController {
             Payment saved = paymentService.addPayment(payment);
 
             // ✅ Send email for both Done and Absent
-            emailService.sendPaymentEmail(
-                    payment.getMemberEmail(),
-                    payment.getMemberId(),
-                    payment.getMemberName(),
-                    payment.getDate().getMonth().toString(),
-                    payment.getStatus(),
-                    payment.getAmount()
-            );
-
+            try {
+                emailService.sendPaymentEmail(
+                        payment.getMemberEmail(),
+                        payment.getMemberId(),
+                        payment.getMemberName(),
+                        payment.getDate().getMonth().toString(),
+                        payment.getStatus(),
+                        payment.getAmount()
+                );
+                System.out.println("Email sent successfully!");
+            } catch (MessagingException e) {
+                e.printStackTrace();
+                System.out.println("Failed to send email!");
+            }
             return ResponseEntity.ok(saved);
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(500).build();
