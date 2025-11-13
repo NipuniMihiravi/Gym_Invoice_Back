@@ -37,6 +37,7 @@ public class PaymentController {
 
             Payment payment = new Payment();
             payment.setMemberId((String) payload.get("memberId"));
+            payment.setBillNo((String) payload.get("billNo"));
             payment.setMemberName((String) payload.get("memberName"));
             payment.setMemberEmail((String) payload.get("memberEmail"));
             payment.setDate(LocalDate.parse((String) payload.get("date"), formatter));      // Next Due Date
@@ -61,6 +62,7 @@ public class PaymentController {
             try {
                 emailService.sendPaymentEmail(
                         payment.getMemberEmail(),
+                        payment.getBillNo(),
                         payment.getMemberId(),
                         payment.getMemberName(),
                         payment.getDate().getMonth().toString(),
@@ -70,7 +72,7 @@ public class PaymentController {
                 System.out.println("Email sent successfully!");
             } catch (MessagingException e) {
                 e.printStackTrace();
-                System.out.println("Failed to send email!");
+                System.out.println("Failed to send email, but payment is saved.");
             }
             return ResponseEntity.ok(saved);
 

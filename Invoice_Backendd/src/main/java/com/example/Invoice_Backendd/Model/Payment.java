@@ -10,6 +10,7 @@ public class Payment {
     @Id
     private String id;
 
+    private String billNo;
     private String memberId;
     private String memberName;
     private String memberEmail;
@@ -23,6 +24,14 @@ public class Payment {
 
     public Payment() {
 
+    }
+
+    public String getBillNo() {
+        return billNo;
+    }
+
+    public void setBillNo(String billNo) {
+        this.billNo = billNo;
     }
 
     public String getId() {
@@ -113,8 +122,9 @@ public class Payment {
         this.paymentMethod = paymentMethod;
     }
 
-    public Payment(String id, String memberId, String memberName, LocalDate joinedDate, String memberEmail, String membershipType, LocalDate date, LocalDate payDate, double amount, String status, String paymentMethod) {
+    public Payment(String id, String billNo,String memberId, String memberName, LocalDate joinedDate, String memberEmail, String membershipType, LocalDate date, LocalDate payDate, double amount, String status, String paymentMethod) {
         this.id = id;
+        this.billNo = billNo;
         this.memberId = memberId;
         this.memberName = memberName;
         this.joinedDate = joinedDate;

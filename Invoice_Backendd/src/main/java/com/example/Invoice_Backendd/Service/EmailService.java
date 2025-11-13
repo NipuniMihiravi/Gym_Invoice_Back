@@ -16,7 +16,7 @@ public class EmailService {
     private JavaMailSender mailSender;
 
     // ✅ Send Payment Confirmation Email
-    public void sendPaymentEmail(String to, String memberId, String memberName, String date, String status, double amount) throws MessagingException {
+    public void sendPaymentEmail(String to, String memberId, String billNo, String memberName, String date, String status, double amount) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
@@ -27,12 +27,12 @@ public class EmailService {
         if ("Absent".equals(status)) {
             body = "Hello " + memberName + " (Member ID: " + memberId + "),<br><br>" +
                     "You have been marked as <b>Absent</b> for the month of <b>" + date + "</b>.<br>" +
-                    "Amount due: <b>Rs. 0</b><br>" +
-                    "Payment method: <b>Absent</b><br><br>" +
+
                     "Thank you for staying with <b>Pulse Fitness</b>!";
         } else {
             body = "Hello " + memberName + " (Member ID: " + memberId + "),<br><br>" +
                     "Your payment details:<br>" +
+                    "Bill No: <b>" + billNo + "</b><br>" +
                     "📅 Month: <b>" + date + "</b><br>" +
                     "💰 Amount: <b>Rs. " + amount + "</b><br>" +
                     "✅ Status: <b>" + status + "</b><br>" +

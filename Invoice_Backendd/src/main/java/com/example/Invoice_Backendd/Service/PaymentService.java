@@ -55,6 +55,7 @@ public class PaymentService {
         return paymentRepository.findById(id).map(payment -> {
             // Update all relevant fields
             payment.setAmount(updatedPayment.getAmount());
+            payment.setBillNo(updatedPayment.getBillNo());
             payment.setDate(updatedPayment.getDate());       // due date
             payment.setPayDate(updatedPayment.getPayDate()); // actual payment date
             payment.setStatus(updatedPayment.getStatus());
