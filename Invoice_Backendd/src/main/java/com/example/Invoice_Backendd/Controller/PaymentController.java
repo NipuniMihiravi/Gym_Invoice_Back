@@ -64,8 +64,8 @@ public class PaymentController {
             try {
                 emailService.sendPaymentEmail(
                         saved.getMemberEmail(),
-                        saved.getBillNo(),
                         saved.getMemberId(),
+                        saved.getBillNo(),
                         saved.getMemberName(),
                         saved.getAmount(),
                         saved.getPaymentMethod(),
@@ -127,7 +127,7 @@ public class PaymentController {
             Payment lastPayment = paymentRepository.findTopByOrderByIdDesc(); // latest record
 
             if (lastPayment == null) {
-                return ResponseEntity.ok(Map.of("billNo", "LTF1000"));
+                return ResponseEntity.ok(Map.of("billNo", "LFP1000"));
             }
 
             return ResponseEntity.ok(Map.of("billNo", lastPayment.getBillNo()));

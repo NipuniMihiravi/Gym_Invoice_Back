@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -56,7 +59,12 @@ public class AttendanceController {
             attendance.setMemberName(member.getName());
             attendance.setEmail(member.getEmail());
             attendance.setDate(today);
-            attendance.setTime(LocalTime.now().toString());
+            ZoneId sriLankaZone = ZoneId.of("Asia/Colombo");
+            LocalTime currentTime = LocalTime.now(sriLankaZone);
+
+// Format as HH:mm:ss
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+            attendance.setTime(currentTime.format(formatter));
 
             attendanceRepository.save(attendance);
 

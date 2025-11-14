@@ -34,7 +34,7 @@ public class EmailService {
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
         helper.setTo(to);
-        helper.setSubject("Pulse Fitness - Payment Notification");
+        helper.setSubject("LIFE FITNESS PARTNER - Payment Notification");
 
         String body =
                 "Hello " + memberName + " (Member ID: " + memberId + "),<br><br>" +
@@ -57,19 +57,37 @@ public class EmailService {
 
 
     // ✅ Send Member QR Code as Email Attachment
-    public void sendMemberQRCode(String toEmail, String subject, String body, byte[] qrCode) throws MessagingException {
+    public void sendStatusChangeEmail(String to, String memberName, String memberId, String status, java.time.LocalDate joinedDate) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-        helper.setTo(toEmail);
+        helper.setTo(to);
+
+        String subject;
+        String body;
+
+        if ("ACTIVE".equalsIgnoreCase(status)) {
+            subject = "Pulse Fitness - Membership Activated";
+            body = "Hello " + memberName + " (Member ID: " + memberId + "),<br><br>" +
+                    "Your membership is now <b>ACTIVE</b>.<br>" +
+                    "Joined Date: " + joinedDate + "<br><br>" +
+                    "Stay healthy. Stay strong. 💪";
+        } else if ("INACTIVE".equalsIgnoreCase(status)) {
+            subject = "Pulse Fitness - Membership Deactivated";
+            body = "Hello " + memberName + " (Member ID: " + memberId + "),<br><br>" +
+                    "Your membership has been <b>DEACTIVATED</b>.<br>" +
+                    "Joined Date: " + joinedDate + "<br><br>" +
+                    "Please contact us if you wish to reactivate your membership.";
+        } else {
+            return; // Do nothing for other statuses
+        }
+
         helper.setSubject(subject);
         helper.setText(body, true);
-
-        // Attach QR Code as PNG
-        helper.addAttachment("membership_qrcode.png", new ByteArrayResource(qrCode));
-
         mailSender.send(message);
     }
+
+
     public void sendAttendanceEmail(String to, String memberId, String memberName, String date) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);

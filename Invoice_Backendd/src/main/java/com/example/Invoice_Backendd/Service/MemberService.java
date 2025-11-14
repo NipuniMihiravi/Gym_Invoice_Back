@@ -97,42 +97,38 @@ public class MemberService {
     // ✅ Update member and send email if ACTIVE
     public Member updateMember(String id, Member updatedMember) {
         return memberRepository.findById(id).map(member -> {
-            updatedMember.setId(id);
+            String oldStatus = member.getMembershipStatus(); // previous status
 
+            // Preserve memberId if missing
             if (updatedMember.getMemberId() == null || updatedMember.getMemberId().isEmpty()) {
                 updatedMember.setMemberId(member.getMemberId());
             }
 
+            updatedMember.setId(id);
             Member saved = memberRepository.save(updatedMember);
 
-            // 🔥 If status is ACTIVE, send email with QR Code as PNG
-            if ("ACTIVE".equalsIgnoreCase(saved.getMembershipStatus())) {
+            String newStatus = saved.getMembershipStatus();
+
+            // ✅ Send email only if status changed
+            if (!oldStatus.equalsIgnoreCase(newStatus)) {
                 try {
-                    String qrData = "MemberID: " + saved.getMemberId() + "\nName: " + saved.getName();
-                    byte[] qrCodeImage = QRCodeGenerator.generateQRCodeImage(qrData, 300, 300);
-
-                    // Compose email body including Member ID
-                    String emailBody = "<h3 style='color:#2E8B57;'>Hello " + saved.getName() + " (Member ID: " + saved.getMemberId() + ")</h3>" +
-                            "<p style='color:#FF4500;'>Your membership is now <b>ACTIVE</b>. Please find your QR code attached.</p>" +
-                            "<p style='color:#0000FF;'>Thank you for staying fit with <b>Pulse Fitness</b>!</p>";
-
-
-                    emailService.sendMemberQRCode(
-                            saved.getEmail(),                      // Member email
-                            "Welcome to Pulse Fitness - Membership Activated!",
-                            emailBody,                             // Body with Member ID
-                            qrCodeImage                             // QR code attachment
+                    // Use dedicated status email method
+                    emailService.sendStatusChangeEmail(
+                            saved.getEmail(),
+                            saved.getName(),
+                            saved.getMemberId(),
+                            newStatus,
+                            saved.getJoinedDate()
                     );
-                } catch (WriterException | IOException | MessagingException e) {
+                } catch (MessagingException e) {
                     e.printStackTrace();
                 }
             }
 
-
-
             return saved;
         }).orElse(null);
     }
+
 
     public String deleteMember(String id) {
         memberRepository.deleteById(id);
