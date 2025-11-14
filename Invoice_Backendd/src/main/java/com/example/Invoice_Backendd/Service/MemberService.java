@@ -97,28 +97,33 @@ public class MemberService {
     // ✅ Update member and send email if ACTIVE
     public Member updateMember(String id, Member updatedMember) {
         return memberRepository.findById(id).map(member -> {
-            String oldStatus = member.getMembershipStatus(); // previous status
 
-            // Preserve memberId if missing
-            if (updatedMember.getMemberId() == null || updatedMember.getMemberId().isEmpty()) {
-                updatedMember.setMemberId(member.getMemberId());
-            }
+            String oldStatus = member.getMembershipStatus();
+            String newStatus = updatedMember.getMembershipStatus();
 
-            updatedMember.setId(id);
-            Member saved = memberRepository.save(updatedMember);
+            // Preserve old fields if frontend does not send them
+            member.setName(updatedMember.getName() != null ? updatedMember.getName() : member.getName());
+            member.setEmail(updatedMember.getEmail() != null ? updatedMember.getEmail() : member.getEmail());
+            member.setMobile(updatedMember.getMobile() != null ? updatedMember.getMobile() : member.getMobile());
+            member.setAddress(updatedMember.getAddress() != null ? updatedMember.getAddress() : member.getAddress());
+            member.setJoinedDate(updatedMember.getJoinedDate() != null ? updatedMember.getJoinedDate() : member.getJoinedDate());
+            member.setMembershipType(updatedMember.getMembershipType() != null ? updatedMember.getMembershipType() : member.getMembershipType());
+            member.setMembershipStatus(updatedMember.getMembershipStatus() != null ? updatedMember.getMembershipStatus() : member.getMembershipStatus());
 
-            String newStatus = saved.getMembershipStatus();
+            Member saved = memberRepository.save(member);
 
-            // ✅ Send email only if status changed
-            if (!oldStatus.equalsIgnoreCase(newStatus)) {
+            // Send mail ONLY when status changes to ACTIVE
+            if (oldStatus != null && newStatus != null
+                    && !oldStatus.equalsIgnoreCase(newStatus)
+                    && newStatus.equalsIgnoreCase("ACTIVE")) {
+
                 try {
-                    // Use dedicated status email method
-                    emailService.sendStatusChangeEmail(
+                    emailService.sendActiveRegistrationEmail(
                             saved.getEmail(),
                             saved.getName(),
                             saved.getMemberId(),
-                            newStatus,
-                            saved.getJoinedDate()
+                            saved.getJoinedDate(),
+                            saved.getMembershipType()
                     );
                 } catch (MessagingException e) {
                     e.printStackTrace();
@@ -128,6 +133,7 @@ public class MemberService {
             return saved;
         }).orElse(null);
     }
+
 
 
     public String deleteMember(String id) {

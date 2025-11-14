@@ -57,32 +57,30 @@ public class EmailService {
 
 
     // ✅ Send Member QR Code as Email Attachment
-    public void sendStatusChangeEmail(String to, String memberName, String memberId, String status, java.time.LocalDate joinedDate) throws MessagingException {
+    public void sendActiveRegistrationEmail(
+            String to,
+            String memberName,
+            String memberId,
+            LocalDate joinedDate,
+            String membershipType
+    ) throws MessagingException {
+
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
         helper.setTo(to);
+        helper.setSubject("LIFE FITNESS PARTNERS - Membership Activated");
 
-        String subject;
-        String body;
+        String body =
+                "Hello " + memberName + " (Member ID: " + memberId + "),<br><br>" +
+                        "You are successfully registered with <b>LIFE FITNESS PARTNERS</b>! 🎉<br><br>" +
 
-        if ("ACTIVE".equalsIgnoreCase(status)) {
-            subject = "Pulse Fitness - Membership Activated";
-            body = "Hello " + memberName + " (Member ID: " + memberId + "),<br><br>" +
-                    "Your membership is now <b>ACTIVE</b>.<br>" +
-                    "Joined Date: " + joinedDate + "<br><br>" +
-                    "Stay healthy. Stay strong. 💪";
-        } else if ("INACTIVE".equalsIgnoreCase(status)) {
-            subject = "Pulse Fitness - Membership Deactivated";
-            body = "Hello " + memberName + " (Member ID: " + memberId + "),<br><br>" +
-                    "Your membership has been <b>DEACTIVATED</b>.<br>" +
-                    "Joined Date: " + joinedDate + "<br><br>" +
-                    "Please contact us if you wish to reactivate your membership.";
-        } else {
-            return; // Do nothing for other statuses
-        }
+                        "📌 <b>Membership Type:</b> " + membershipType + "<br>" +
+                        "📅 <b>Joined Date:</b> " + joinedDate + "<br><br>" +
 
-        helper.setSubject(subject);
+                        "Thank you for joining <b>LFP</b>.<br>" +
+                        "Stay healthy. Stay strong. 💪";
+
         helper.setText(body, true);
         mailSender.send(message);
     }
