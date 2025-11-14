@@ -57,33 +57,27 @@ public class EmailService {
 
 
     // ✅ Send Member QR Code as Email Attachment
-    public void sendActiveRegistrationEmail(
-            String to,
-            String memberName,
-            String memberId,
-            LocalDate joinedDate,
-            String membershipType
-    ) throws MessagingException {
+    public void sendActiveRegistrationEmail(String toEmail, String name, String memberId,
+                                            LocalDate joinedDate, String membershipType) throws MessagingException {
+
+        String subject = "✅ Registration Activated!";
+        String body = "Hello " + name + ",\n\n" +
+                "Your membership has been activated successfully.\n" +
+                "Member ID: " + memberId + "\n" +
+                "Joined Date: " + joinedDate + "\n" +
+                "Membership Type: " + membershipType + "\n\n" +
+                "Welcome to our Gym!";
 
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-        helper.setTo(to);
-        helper.setSubject("LIFE FITNESS PARTNERS - Membership Activated");
+        helper.setTo(toEmail);
+        helper.setSubject(subject);
+        helper.setText(body);
 
-        String body =
-                "Hello " + memberName + " (Member ID: " + memberId + "),<br><br>" +
-                        "You are successfully registered with <b>LIFE FITNESS PARTNERS</b>! 🎉<br><br>" +
-
-                        "📌 <b>Membership Type:</b> " + membershipType + "<br>" +
-                        "📅 <b>Joined Date:</b> " + joinedDate + "<br><br>" +
-
-                        "Thank you for joining <b>LFP</b>.<br>" +
-                        "Stay healthy. Stay strong. 💪";
-
-        helper.setText(body, true);
         mailSender.send(message);
     }
+
 
 
     public void sendAttendanceEmail(String to, String memberId, String memberName, String date) throws MessagingException {

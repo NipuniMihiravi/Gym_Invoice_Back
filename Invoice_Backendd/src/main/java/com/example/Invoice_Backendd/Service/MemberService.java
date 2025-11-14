@@ -95,46 +95,44 @@ public class MemberService {
     }
 
     // ✅ Update member and send email if ACTIVE
+    // Update member
     public Member updateMember(String id, Member updatedMember) {
         return memberRepository.findById(id).map(member -> {
 
             String oldStatus = member.getMembershipStatus();
             String newStatus = updatedMember.getMembershipStatus();
 
-            // Preserve old fields if frontend does not send them
+            // Update other fields
             member.setName(updatedMember.getName() != null ? updatedMember.getName() : member.getName());
             member.setEmail(updatedMember.getEmail() != null ? updatedMember.getEmail() : member.getEmail());
             member.setMobile(updatedMember.getMobile() != null ? updatedMember.getMobile() : member.getMobile());
-            member.setAddress(updatedMember.getAddress() != null ? updatedMember.getAddress() : member.getAddress());
-            member.setJoinedDate(updatedMember.getJoinedDate() != null ? updatedMember.getJoinedDate() : member.getJoinedDate());
             member.setMembershipType(updatedMember.getMembershipType() != null ? updatedMember.getMembershipType() : member.getMembershipType());
-            member.setMembershipStatus(updatedMember.getMembershipStatus() != null ? updatedMember.getMembershipStatus() : member.getMembershipStatus());
+            member.setMembershipStatus(newStatus != null ? newStatus : member.getMembershipStatus());
 
-            Member saved = memberRepository.save(member);
+            // Save member first
+            Member savedMember = memberRepository.save(member);
 
-            // Send mail ONLY when status changes to ACTIVE
+            // ✅ Send email ONLY when status changes to ACTIVE
             if (oldStatus != null && newStatus != null
                     && !oldStatus.equalsIgnoreCase(newStatus)
                     && newStatus.equalsIgnoreCase("ACTIVE")) {
-
                 try {
                     emailService.sendActiveRegistrationEmail(
-                            saved.getEmail(),
-                            saved.getName(),
-                            saved.getMemberId(),
-                            saved.getJoinedDate(),
-                            saved.getMembershipType()
+                            savedMember.getEmail(),
+                            savedMember.getName(),
+                            savedMember.getMemberId(),
+                            savedMember.getJoinedDate(),
+                            savedMember.getMembershipType()
                     );
                 } catch (MessagingException e) {
                     e.printStackTrace();
+                    // Optional: log the error
                 }
             }
 
-            return saved;
+            return savedMember;
         }).orElse(null);
     }
-
-
 
     public String deleteMember(String id) {
         memberRepository.deleteById(id);
