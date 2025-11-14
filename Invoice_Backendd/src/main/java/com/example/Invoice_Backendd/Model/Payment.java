@@ -20,18 +20,27 @@ public class Payment {
     private LocalDate payDate;   // Actual Payment Date
     private double amount;
     private String status;
-    private String paymentMethod;
 
+    private String paymentMethod;
+    private String participation;
     public Payment() {
 
     }
 
-    public String getBillNo() {
-        return billNo;
-    }
-
-    public void setBillNo(String billNo) {
+    public Payment(String id, String billNo, String memberName, String memberId, String memberEmail, LocalDate joinedDate, String membershipType, LocalDate date, LocalDate payDate, double amount, String status, String paymentMethod, String participation) {
+        this.id = id;
         this.billNo = billNo;
+        this.memberName = memberName;
+        this.memberId = memberId;
+        this.memberEmail = memberEmail;
+        this.joinedDate = joinedDate;
+        this.membershipType = membershipType;
+        this.date = date;
+        this.payDate = payDate;
+        this.amount = amount;
+        this.status = status;
+        this.paymentMethod = paymentMethod;
+        this.participation = participation;
     }
 
     public String getId() {
@@ -40,6 +49,14 @@ public class Payment {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getBillNo() {
+        return billNo;
+    }
+
+    public void setBillNo(String billNo) {
+        this.billNo = billNo;
     }
 
     public String getMemberId() {
@@ -122,18 +139,11 @@ public class Payment {
         this.paymentMethod = paymentMethod;
     }
 
-    public Payment(String id, String billNo,String memberId, String memberName, LocalDate joinedDate, String memberEmail, String membershipType, LocalDate date, LocalDate payDate, double amount, String status, String paymentMethod) {
-        this.id = id;
-        this.billNo = billNo;
-        this.memberId = memberId;
-        this.memberName = memberName;
-        this.joinedDate = joinedDate;
-        this.memberEmail = memberEmail;
-        this.membershipType = membershipType;
-        this.date = date;
-        this.payDate = payDate;
-        this.amount = amount;
-        this.status = status;
-        this.paymentMethod = paymentMethod;
+    public String getParticipation() {
+        return participation;
+    }
+
+    public void setParticipation(String participation) {
+        this.participation = participation;
     }
 }

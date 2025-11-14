@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
+import java.time.LocalDate;
+
 @Service
 public class EmailService {
 
@@ -21,9 +23,11 @@ public class EmailService {
             String memberId,
             String billNo,
             String memberName,
-            String date,
-            String status,
-            double amount
+            double amount,
+            String paymentMethod,
+            LocalDate dueDate,
+            LocalDate payDate,
+            String status
     ) throws MessagingException {
 
         MimeMessage message = mailSender.createMimeMessage();
@@ -32,34 +36,24 @@ public class EmailService {
         helper.setTo(to);
         helper.setSubject("Pulse Fitness - Payment Notification");
 
-        String body;
+        String body =
+                "Hello " + memberName + " (Member ID: " + memberId + "),<br><br>" +
+                        "<b>Your Payment Receipt</b><br><br>" +
 
-        if ("Absent".equalsIgnoreCase(status)) {
+                        "🧾 <b>Bill No:</b> " + billNo + "<br>" +
+                        "📅 <b>Month Paid For:</b> " + (dueDate != null ? dueDate.toString() : "-") + "<br>" +
+                        "📅 <b>Payment Date:</b> " + (payDate != null ? payDate.toString() : "-") + "<br>" +
+                        "💰 <b>Amount:</b> Rs. " + amount + "<br>" +
+                        "💳 <b>Payment Method:</b> " + (paymentMethod != null ? paymentMethod : "-") + "<br>" +
+                        "🔖 <b>Status:</b> " + status + "<br><br>" +
 
-            // ✔ Clean absent email
-            body =
-                    "Hello " + memberName + " (Member ID: " + memberId + "),<br><br>" +
-                            "You have been marked as <b style='color:red;'>ABSENT</b> for the month of <b>" + date + "</b>.<br>" +
-                            "Please make sure to stay consistent with your fitness routine.<br><br>" +
-                            "Thanks,<br><b>Pulse Fitness</b>";
-
-        } else {
-
-            // ✔ Clean payment email
-            body =
-                    "Hello " + memberName + " (Member ID: " + memberId + "),<br><br>" +
-                            "<b>Your Payment Receipt</b><br><br>" +
-                            "🧾 <b>Bill No:</b> " + billNo + "<br>" +
-                            "📅 <b>Month:</b> " + date + "<br>" +
-                            "💰 <b>Amount:</b> Rs. " + amount + "<br>" +
-                            "💳 <b>Payment Method:</b> Cash/Online<br>" +
-                            "✅ <b>Status:</b> Paid<br><br>" +
-                            "Thank you for choosing <b>Pulse Fitness</b>!";
-        }
+                        "Thank you for choosing <b>Pulse Fitness</b>!<br>" +
+                        "Stay healthy. Stay strong. 💪";
 
         helper.setText(body, true);
         mailSender.send(message);
     }
+
 
 
     // ✅ Send Member QR Code as Email Attachment

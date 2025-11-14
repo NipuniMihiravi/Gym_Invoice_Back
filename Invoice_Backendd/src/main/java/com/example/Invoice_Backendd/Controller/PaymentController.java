@@ -41,53 +41,42 @@ public class PaymentController {
             payment.setMemberName((String) payload.get("memberName"));
             payment.setMemberEmail((String) payload.get("memberEmail"));
 
-            // Selected month (Due Date)
-            payment.setDate(LocalDate.parse((String) payload.get("date"), formatter));
+            payment.setDate(LocalDate.parse((String) payload.get("date"), formatter));  // Paid Month
+            payment.setPayDate(LocalDate.parse((String) payload.get("payDate"), formatter)); // Actual payment date
 
-            // Pay Date (only for paid)
-            payment.setPayDate(payload.get("payDate") != null
-                    ? LocalDate.parse((String) payload.get("payDate"), formatter)
-                    : null);
+            String participation = (String) payload.get("participation");
 
-            boolean isAbsent = Boolean.parseBoolean(payload.getOrDefault("absent", "false").toString());
-
-            if (isAbsent) {
-                // ----------------------------
-                //  ⭐ ABSENT PAYMENT LOGIC ⭐
-                // ----------------------------
+            // ---------- PARTICIPATION LOGIC ----------
+            if ("Absent".equalsIgnoreCase(participation)) {
                 payment.setStatus("Absent");
                 payment.setAmount(0);
                 payment.setPaymentMethod("Absent");
             } else {
-                // ----------------------------
-                //  ⭐ NORMAL PAYMENT LOGIC ⭐
-                // ----------------------------
                 payment.setStatus("Done");
                 payment.setAmount(Double.parseDouble(payload.get("amount").toString()));
                 payment.setPaymentMethod((String) payload.get("paymentMethod"));
             }
 
-            // Save payment
+            // ---------- SAVE PAYMENT ----------
             Payment saved = paymentService.addPayment(payment);
 
-            // Prepare email values
-            String monthName = payment.getDate().getMonth().toString(); // JANUARY → convert to readable form
-
-            // Send email
+            // ---------- SEND EMAIL AFTER SAVE ----------
             try {
                 emailService.sendPaymentEmail(
-                        payment.getMemberEmail(),
-                        payment.getMemberId(),
-                        payment.getBillNo(),
-                        payment.getMemberName(),
-                        monthName,
-                        payment.getStatus(),
-                        payment.getAmount()
+                        saved.getMemberEmail(),
+                        saved.getBillNo(),
+                        saved.getMemberId(),
+                        saved.getMemberName(),
+                        saved.getAmount(),
+                        saved.getPaymentMethod(),
+                        saved.getDate(),
+                        saved.getPayDate(),
+                        saved.getStatus()
                 );
                 System.out.println("Email sent successfully!");
             } catch (MessagingException e) {
+                System.out.println("❌ Email failed, but payment saved.");
                 e.printStackTrace();
-                System.out.println("Email failed, but payment saved.");
             }
 
             return ResponseEntity.ok(saved);
@@ -97,7 +86,6 @@ public class PaymentController {
             return ResponseEntity.status(500).build();
         }
     }
-
 
 
     @GetMapping
@@ -132,6 +120,7 @@ public class PaymentController {
 
         return paymentService.getPendingPayments(LocalDate.parse(startDate), LocalDate.parse(endDate));
     }
+
     @GetMapping("/last-bill")
     public ResponseEntity<?> getLastBill() {
         try {
