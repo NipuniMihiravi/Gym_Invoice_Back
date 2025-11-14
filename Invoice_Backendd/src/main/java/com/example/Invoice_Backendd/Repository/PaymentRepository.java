@@ -10,7 +10,8 @@ import java.util.Optional;
 public interface PaymentRepository extends MongoRepository<Payment, String> {
     List<Payment> findByMemberId(String memberId);
     Payment findTopByMemberIdOrderByDateDesc(String memberId);
-    Optional<Payment> findTopByOrderByBillNoDesc();
+    Payment findTopByOrderByIdDesc();
+
 
 
     boolean existsByMemberIdAndDateBetween(String memberId, LocalDate start, LocalDate end);

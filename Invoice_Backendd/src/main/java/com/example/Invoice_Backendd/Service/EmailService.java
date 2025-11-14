@@ -16,7 +16,16 @@ public class EmailService {
     private JavaMailSender mailSender;
 
     // ✅ Send Payment Confirmation Email
-    public void sendPaymentEmail(String to, String memberId, String billNo, String memberName, String date, String status, double amount) throws MessagingException {
+    public void sendPaymentEmail(
+            String to,
+            String memberId,
+            String billNo,
+            String memberName,
+            String date,
+            String status,
+            double amount
+    ) throws MessagingException {
+
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
@@ -24,23 +33,31 @@ public class EmailService {
         helper.setSubject("Pulse Fitness - Payment Notification");
 
         String body;
-        if ("Absent".equals(status)) {
-            body = "Hello " + memberName + " (Member ID: " + memberId + "),<br><br>" +
-                    "You have been marked as <b>Absent</b> for the month of <b>" + date + "</b>.<br>" +
 
-                    "Thank you for staying with <b>Pulse Fitness</b>!";
+        if ("Absent".equalsIgnoreCase(status)) {
+
+            // ✔ Clean absent email
+            body =
+                    "Hello " + memberName + " (Member ID: " + memberId + "),<br><br>" +
+                            "You have been marked as <b style='color:red;'>ABSENT</b> for the month of <b>" + date + "</b>.<br>" +
+                            "Please make sure to stay consistent with your fitness routine.<br><br>" +
+                            "Thanks,<br><b>Pulse Fitness</b>";
+
         } else {
-            body = "Hello " + memberName + " (Member ID: " + memberId + "),<br><br>" +
-                    "Your payment details:<br>" +
-                    "Bill No: <b>" + billNo + "</b><br>" +
-                    "📅 Month: <b>" + date + "</b><br>" +
-                    "💰 Amount: <b>Rs. " + amount + "</b><br>" +
-                    "✅ Status: <b>" + status + "</b><br>" +
-                    "💳 Payment Method: <b>" + (amount > 0 ? "Cash/Online" : "-") + "</b><br><br>" +
-                    "Thank you for staying fit with <b>Pulse Fitness</b>!";
+
+            // ✔ Clean payment email
+            body =
+                    "Hello " + memberName + " (Member ID: " + memberId + "),<br><br>" +
+                            "<b>Your Payment Receipt</b><br><br>" +
+                            "🧾 <b>Bill No:</b> " + billNo + "<br>" +
+                            "📅 <b>Month:</b> " + date + "<br>" +
+                            "💰 <b>Amount:</b> Rs. " + amount + "<br>" +
+                            "💳 <b>Payment Method:</b> Cash/Online<br>" +
+                            "✅ <b>Status:</b> Paid<br><br>" +
+                            "Thank you for choosing <b>Pulse Fitness</b>!";
         }
 
-        helper.setText(body, true); // enable HTML
+        helper.setText(body, true);
         mailSender.send(message);
     }
 
@@ -59,4 +76,19 @@ public class EmailService {
 
         mailSender.send(message);
     }
+    public void sendAttendanceEmail(String to, String memberId, String memberName, String date) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+        helper.setTo(to);
+        helper.setSubject("Pulse Fitness - Attendance Notification");
+
+        String body = "Hello " + memberName + " (Member ID: " + memberId + "),<br><br>" +
+                "Your attendance has been marked on <b>" + date + "</b>.<br><br>" +
+                "Thank you for staying fit with <b>Pulse Fitness</b>!";
+
+        helper.setText(body, true);
+        mailSender.send(message);
+    }
+
 }

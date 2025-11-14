@@ -40,40 +40,56 @@ public class PaymentController {
             payment.setBillNo((String) payload.get("billNo"));
             payment.setMemberName((String) payload.get("memberName"));
             payment.setMemberEmail((String) payload.get("memberEmail"));
-            payment.setDate(LocalDate.parse((String) payload.get("date"), formatter));      // Next Due Date
+
+            // Selected month (Due Date)
+            payment.setDate(LocalDate.parse((String) payload.get("date"), formatter));
+
+            // Pay Date (only for paid)
             payment.setPayDate(payload.get("payDate") != null
                     ? LocalDate.parse((String) payload.get("payDate"), formatter)
-                    : null); // Actual payment date
-            payment.setPaymentMethod((String) payload.getOrDefault("paymentMethod", "Absent"));
+                    : null);
 
             boolean isAbsent = Boolean.parseBoolean(payload.getOrDefault("absent", "false").toString());
+
             if (isAbsent) {
+                // ----------------------------
+                //  ⭐ ABSENT PAYMENT LOGIC ⭐
+                // ----------------------------
                 payment.setStatus("Absent");
                 payment.setAmount(0);
                 payment.setPaymentMethod("Absent");
             } else {
+                // ----------------------------
+                //  ⭐ NORMAL PAYMENT LOGIC ⭐
+                // ----------------------------
                 payment.setStatus("Done");
                 payment.setAmount(Double.parseDouble(payload.get("amount").toString()));
+                payment.setPaymentMethod((String) payload.get("paymentMethod"));
             }
 
+            // Save payment
             Payment saved = paymentService.addPayment(payment);
 
-            // ✅ Send email for both Done and Absent
+            // Prepare email values
+            String monthName = payment.getDate().getMonth().toString(); // JANUARY → convert to readable form
+
+            // Send email
             try {
                 emailService.sendPaymentEmail(
                         payment.getMemberEmail(),
-                        payment.getBillNo(),
                         payment.getMemberId(),
+                        payment.getBillNo(),
                         payment.getMemberName(),
-                        payment.getDate().getMonth().toString(),
+                        monthName,
                         payment.getStatus(),
                         payment.getAmount()
                 );
                 System.out.println("Email sent successfully!");
             } catch (MessagingException e) {
                 e.printStackTrace();
-                System.out.println("Failed to send email, but payment is saved.");
+                System.out.println("Email failed, but payment saved.");
             }
+
             return ResponseEntity.ok(saved);
 
         } catch (Exception e) {
@@ -81,6 +97,7 @@ public class PaymentController {
             return ResponseEntity.status(500).build();
         }
     }
+
 
 
     @GetMapping
@@ -115,5 +132,21 @@ public class PaymentController {
 
         return paymentService.getPendingPayments(LocalDate.parse(startDate), LocalDate.parse(endDate));
     }
+    @GetMapping("/last-bill")
+    public ResponseEntity<?> getLastBill() {
+        try {
+            Payment lastPayment = paymentRepository.findTopByOrderByIdDesc(); // latest record
+
+            if (lastPayment == null) {
+                return ResponseEntity.ok(Map.of("billNo", "LTF1000"));
+            }
+
+            return ResponseEntity.ok(Map.of("billNo", lastPayment.getBillNo()));
+
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error fetching last bill");
+        }
+    }
+
 
 }

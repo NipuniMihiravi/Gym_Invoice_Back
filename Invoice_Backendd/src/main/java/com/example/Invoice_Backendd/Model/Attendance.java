@@ -16,30 +16,74 @@ public class Attendance {
     @Id
     private String id;
 
+    private String memberName;
+    private String email;
+
     private String memberId;
     private LocalDate date;
     private String time; // corrected type
 
-    // Default constructor (required by Spring Data)
-    public Attendance() {
-    }
-
-    // Constructor with memberId and date
-    public Attendance(String memberId, LocalDate date, String time) {
+    public Attendance(String id, String memberName, String email, String memberId, LocalDate date, String time) {
+        this.id = id;
+        this.memberName = memberName;
+        this.email = email;
         this.memberId = memberId;
         this.date = date;
         this.time = time;
     }
 
-    // Getters and Setters
-    public String getId() { return id; }
+    public Attendance(String memberId, LocalDate today, String currentTime) {
+    }
 
-    public String getMemberId() { return memberId; }
-    public void setMemberId(String memberId) { this.memberId = memberId; }
+    public Attendance() {
 
-    public LocalDate getDate() { return date; }
-    public void setDate(LocalDate date) { this.date = date; }
+    }
 
-    public String getTime() { return time; }
-    public void setTime(String time) { this.time = time; }
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getMemberName() {
+        return memberName;
+    }
+
+    public void setMemberName(String memberName) {
+        this.memberName = memberName;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getMemberId() {
+        return memberId;
+    }
+
+    public void setMemberId(String memberId) {
+        this.memberId = memberId;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
 }
