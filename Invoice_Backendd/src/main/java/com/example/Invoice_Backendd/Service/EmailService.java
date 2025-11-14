@@ -47,7 +47,7 @@ public class EmailService {
                         "💳 <b>Payment Method:</b> " + (paymentMethod != null ? paymentMethod : "-") + "<br>" +
                         "🔖 <b>Status:</b> " + status + "<br><br>" +
 
-                        "Thank you for choosing <b>Pulse Fitness</b>!<br>" +
+                        "Thank you for choosing <b>Life Fitness Partners</b>!<br>" +
                         "Stay healthy. Stay strong. 💪";
 
         helper.setText(body, true);
@@ -60,7 +60,7 @@ public class EmailService {
     public void sendActiveRegistrationEmail(String toEmail, String name, String memberId,
                                             LocalDate joinedDate, String membershipType) throws MessagingException {
 
-        String subject = "✅ Registration Activated!";
+        String subject = "✅ Registration Activated! - LIFE FITNESS PARTNERS";
         String body = "Hello " + name + ",\n\n" +
                 "Your membership has been activated successfully.\n" +
                 "Member ID: " + memberId + "\n" +
@@ -85,11 +85,11 @@ public class EmailService {
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
         helper.setTo(to);
-        helper.setSubject("Pulse Fitness - Attendance Notification");
+        helper.setSubject("LIFE FITNESS PARTNERS - Attendance Notification");
 
         String body = "Hello " + memberName + " (Member ID: " + memberId + "),<br><br>" +
                 "Your attendance has been marked on <b>" + date + "</b>.<br><br>" +
-                "Thank you for staying fit with <b>Pulse Fitness</b>!";
+                "Thank you for staying fit with <b>Life Fitness Partners</b>!";
 
         helper.setText(body, true);
         mailSender.send(message);
