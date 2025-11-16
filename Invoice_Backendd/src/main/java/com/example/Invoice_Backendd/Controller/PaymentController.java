@@ -138,7 +138,7 @@ public class PaymentController {
         }
     }
     // UPDATE NEXT DUE DATE
-    @PutMapping("/payments/update-due-date/{memberId}")
+    @PutMapping("/update-due-date/{memberId}")
     public ResponseEntity<?> updateDueDate(
             @PathVariable String memberId,
             @RequestBody DueDateRequest request) {
