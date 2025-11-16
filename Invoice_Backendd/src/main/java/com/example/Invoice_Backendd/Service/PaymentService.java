@@ -100,6 +100,23 @@ public class PaymentService {
 
         return result;
     }
+    public boolean updateDueDate(String memberId, LocalDate newDate) {
+        List<Payment> payments = paymentRepository.findByMemberId(memberId);
+
+        if (payments.isEmpty()) return false;
+
+        // find latest payment
+        Payment lastPayment = payments.get(payments.size() - 1);
+
+        lastPayment.setDate(newDate); // <-- update due date
+
+        paymentRepository.save(lastPayment);
+
+        return true;
+    }
+
+
+
 
 
 

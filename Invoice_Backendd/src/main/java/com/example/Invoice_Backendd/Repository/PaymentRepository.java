@@ -14,6 +14,8 @@ public interface PaymentRepository extends MongoRepository<Payment, String> {
 
 
 
+
+
     boolean existsByMemberIdAndDateBetween(String memberId, LocalDate start, LocalDate end);
 
 
