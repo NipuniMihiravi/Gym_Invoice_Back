@@ -102,20 +102,24 @@ public class MemberService {
             String oldStatus = member.getMembershipStatus();
             String newStatus = updatedMember.getMembershipStatus();
 
-            // Update other fields
+            // Update fields
             member.setName(updatedMember.getName() != null ? updatedMember.getName() : member.getName());
             member.setEmail(updatedMember.getEmail() != null ? updatedMember.getEmail() : member.getEmail());
             member.setMobile(updatedMember.getMobile() != null ? updatedMember.getMobile() : member.getMobile());
             member.setMembershipType(updatedMember.getMembershipType() != null ? updatedMember.getMembershipType() : member.getMembershipType());
             member.setMembershipStatus(newStatus != null ? newStatus : member.getMembershipStatus());
 
-            // Save member first
+            // ✅ FIX: Update joinedDate
+            member.setJoinedDate(updatedMember.getJoinedDate() != null ? updatedMember.getJoinedDate() : member.getJoinedDate());
+
+            // Save member
             Member savedMember = memberRepository.save(member);
 
-            // ✅ Send email ONLY when status changes to ACTIVE
-            if (oldStatus != null && newStatus != null
-                    && !oldStatus.equalsIgnoreCase(newStatus)
-                    && newStatus.equalsIgnoreCase("ACTIVE")) {
+            // Send email on ACTIVE
+            if (oldStatus != null && newStatus != null &&
+                    !oldStatus.equalsIgnoreCase(newStatus) &&
+                    newStatus.equalsIgnoreCase("ACTIVE")) {
+
                 try {
                     emailService.sendActiveRegistrationEmail(
                             savedMember.getEmail(),
@@ -126,13 +130,13 @@ public class MemberService {
                     );
                 } catch (MessagingException e) {
                     e.printStackTrace();
-                    // Optional: log the error
                 }
             }
 
             return savedMember;
         }).orElse(null);
     }
+
 
     public String deleteMember(String id) {
         memberRepository.deleteById(id);
