@@ -102,16 +102,6 @@ public class PaymentService {
     }
 
 
-    public boolean updateDueDateForMember(String memberId, LocalDate newDate) {
-        Payment lastPayment = paymentRepository.findTopByMemberIdOrderByIdDesc(memberId);
-
-        if (lastPayment == null) return false;
-
-        lastPayment.setDate(newDate);
-        paymentRepository.save(lastPayment);
-        return true;
-    }
-
 
 
 

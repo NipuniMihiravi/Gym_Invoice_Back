@@ -1,6 +1,5 @@
 package com.example.Invoice_Backendd.Controller;
 
-import com.example.Invoice_Backendd.DTO.DueDateRequest;
 import com.example.Invoice_Backendd.DTO.PendingPaymentDTO;
 import com.example.Invoice_Backendd.Model.Payment;
 import com.example.Invoice_Backendd.Repository.PaymentRepository;
@@ -136,17 +135,6 @@ public class PaymentController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Error fetching last bill");
         }
-    }
-    @PutMapping("/update-due-date/{memberId}")
-    public ResponseEntity<?> updateDueDate(
-            @PathVariable String memberId,
-            @RequestBody DueDateRequest request) {
-
-        boolean updated = paymentService.updateDueDateForMember(memberId, request.getDate());
-
-        return updated
-                ? ResponseEntity.ok("Due date updated successfully")
-                : ResponseEntity.status(404).body("Payment not found");
     }
 
 
