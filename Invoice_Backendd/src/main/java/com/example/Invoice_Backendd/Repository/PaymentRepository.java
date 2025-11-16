@@ -11,6 +11,8 @@ public interface PaymentRepository extends MongoRepository<Payment, String> {
     List<Payment> findByMemberId(String memberId);
     Payment findTopByMemberIdOrderByDateDesc(String memberId);
     Payment findTopByOrderByIdDesc();
+    Payment findTopByMemberIdOrderByIdDesc(String memberId);
+
 
 
 
