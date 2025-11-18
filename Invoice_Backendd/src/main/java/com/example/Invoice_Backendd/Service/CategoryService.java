@@ -1,9 +1,8 @@
 package com.example.Invoice_Backendd.Service;
 
-
-
 import com.example.Invoice_Backendd.Model.Category;
 import com.example.Invoice_Backendd.Repository.CategoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,30 +10,31 @@ import java.util.List;
 @Service
 public class CategoryService {
 
-    private final CategoryRepository repo;
+    @Autowired
+    private CategoryRepository categoryRepo;
 
-    public CategoryService(CategoryRepository repo) {
-        this.repo = repo;
+    // Add new category
+    public Category addCategory(Category category) {
+        return categoryRepo.save(category);
     }
 
-    public List<Category> getAll() {
-        return repo.findAll();
+    // Get all categories
+    public List<Category> getAllCategories() {
+        return categoryRepo.findAll();
     }
 
-    public Category addCategory(Category cat) {
-        return repo.save(cat);
-    }
-
-    public Category updateCategory(Long id, Category updated) {
-        return repo.findById(id).map(cat -> {
+    // Update category
+    public Category updateCategory(String id, Category updated) {
+        return categoryRepo.findById(id).map(cat -> {
             cat.setName(updated.getName());
-            return repo.save(cat);
+            return categoryRepo.save(cat);
         }).orElse(null);
     }
 
-    public boolean deleteCategory(Long id) {
-        if (!repo.existsById(id)) return false;
-        repo.deleteById(id);
+    // Delete category
+    public boolean deleteCategory(String id) {
+        if (!categoryRepo.existsById(id)) return false;
+        categoryRepo.deleteById(id);
         return true;
     }
 }

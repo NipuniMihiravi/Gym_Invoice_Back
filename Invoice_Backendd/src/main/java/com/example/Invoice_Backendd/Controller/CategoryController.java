@@ -1,41 +1,37 @@
 package com.example.Invoice_Backendd.Controller;
 
-
-
 import com.example.Invoice_Backendd.Model.Category;
 import com.example.Invoice_Backendd.Service.CategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@CrossOrigin
 @RestController
-@RequestMapping("/api/category")
+@RequestMapping("/category")
+@CrossOrigin(origins = "*")
 public class CategoryController {
 
-    private final CategoryService service;
+    @Autowired
+    private CategoryService service;
 
-    public CategoryController(CategoryService service) {
-        this.service = service;
+    @PostMapping("/add")
+    public Category add(@RequestBody Category cat) {
+        return service.addCategory(cat);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public List<Category> getAll() {
-        return service.getAll();
+        return service.getAllCategories();
     }
 
-    @PostMapping
-    public Category add(@RequestBody Category category) {
-        return service.addCategory(category);
-    }
-
-    @PutMapping("/{id}")
-    public Category update(@PathVariable Long id, @RequestBody Category cat) {
+    @PutMapping("/update/{id}")
+    public Category update(@PathVariable String id, @RequestBody Category cat) {
         return service.updateCategory(id, cat);
     }
 
-    @DeleteMapping("/{id}")
-    public boolean delete(@PathVariable Long id) {
+    @DeleteMapping("/delete/{id}")
+    public boolean delete(@PathVariable String id) {
         return service.deleteCategory(id);
     }
 }
