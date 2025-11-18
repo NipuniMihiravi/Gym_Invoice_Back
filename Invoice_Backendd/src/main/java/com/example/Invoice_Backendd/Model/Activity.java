@@ -2,9 +2,7 @@ package com.example.Invoice_Backendd.Model;
 
 import lombok.*;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+
 public class Activity {
     private String id;
     private String name;
