@@ -1,10 +1,14 @@
 package com.example.Invoice_Backendd.Model;
 
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 @Document(collection = "categories")
 public class Category {
 
@@ -13,16 +17,35 @@ public class Category {
 
     private String name;
 
-    // Store only Activity IDs
-    private List<String> activityIds;
+    private List<Activity> activities;
 
-    // Getters & Setters
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public Category(String id, String name, List<Activity> activities) {
+        this.id = id;
+        this.name = name;
+        this.activities = activities;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public String getId() {
+        return id;
+    }
 
-    public List<String> getActivityIds() { return activityIds; }
-    public void setActivityIds(List<String> activityIds) { this.activityIds = activityIds; }
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public List<Activity> getActivities() {
+        return activities;
+    }
+
+    public void setActivities(List<Activity> activities) {
+        this.activities = activities;
+    }
 }

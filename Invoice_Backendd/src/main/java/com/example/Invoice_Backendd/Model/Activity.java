@@ -1,29 +1,42 @@
 package com.example.Invoice_Backendd.Model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import lombok.*;
 
-@Document(collection = "activities")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Activity {
-
-    @Id
     private String id;
-
     private String name;
-    private String time; // HH:mm
+    private int count;
 
-    private String categoryId; // store category ObjectId as string
+    public Activity(String id, String name, int count) {
+        this.id = id;
+        this.name = name;
+        this.count = count;
+    }
 
-    // Getters & Setters
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public String getId() {
+        return id;
+    }
 
-    public String getName() { return name; }
-    public void setName(String name) { this.name = name; }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public String getTime() { return time; }
-    public void setTime(String time) { this.time = time; }
+    public String getName() {
+        return name;
+    }
 
-    public String getCategoryId() { return categoryId; }
-    public void setCategoryId(String categoryId) { this.categoryId = categoryId; }
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
 }
