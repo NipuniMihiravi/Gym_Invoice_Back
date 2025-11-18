@@ -137,6 +137,12 @@ public class PaymentController {
         }
     }
 
+    @GetMapping("/bill/{billNo}")
+    public Payment getByBillNo(@PathVariable String billNo) {
+        return paymentService.findByBillNo(billNo);
+    }
+
+
 
 
 

@@ -101,6 +101,10 @@ public class PaymentService {
         return result;
     }
 
+    public Payment findByBillNo(String billNo) {
+        return paymentRepository.findByBillNo(billNo);
+    }
+
 
 
 
