@@ -6,9 +6,9 @@ import lombok.*;
 public class Activity {
     private String id;
     private String name;
-    private int count;
+    private String count;
 
-    public Activity(String id, String name, int count) {
+    public Activity(String id, String name, String count) {
         this.id = id;
         this.name = name;
         this.count = count;
@@ -30,11 +30,11 @@ public class Activity {
         this.name = name;
     }
 
-    public int getCount() {
+    public String getCount() {
         return count;
     }
 
-    public void setCount(int count) {
+    public void setCount(String count) {
         this.count = count;
     }
 }
