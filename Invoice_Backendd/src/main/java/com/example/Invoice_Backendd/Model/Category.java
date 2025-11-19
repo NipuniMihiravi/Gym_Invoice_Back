@@ -10,12 +10,18 @@ import java.util.List;
 @Document(collection = "categories")
 public class Category {
 
+
     @Id
     private String id;
 
     private String name;
 
     private List<Activity> activities;
+
+    public Category() {
+        // REQUIRED for MongoDB
+    }
+
 
     public Category(String id, String name, List<Activity> activities) {
         this.id = id;

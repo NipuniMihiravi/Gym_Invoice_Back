@@ -4,9 +4,15 @@ import lombok.*;
 
 
 public class Activity {
+
     private String id;
     private String name;
     private String count;
+
+    public Activity() {
+        // REQUIRED for MongoDB
+    }
+
 
     public Activity(String id, String name, String count) {
         this.id = id;
